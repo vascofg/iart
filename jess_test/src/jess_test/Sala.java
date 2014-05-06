@@ -24,6 +24,94 @@ public class Sala {
 	
 	
 	
+	public int getLuz() {
+		return luz;
+	}
+
+	public void setLuz(int luz) {
+		this.luz = luz;
+	}
+
+	public int getHumidade() {
+		return humidade;
+	}
+
+	public void setHumidade(int humidade) {
+		this.humidade = humidade;
+	}
+
+	public Boolean getMaqCafe() {
+		return maqCafe;
+	}
+
+	public void setMaqCafe(Boolean maqCafe) {
+		this.maqCafe = maqCafe;
+	}
+
+	public Boolean getPorta() {
+		return porta;
+	}
+
+	public void setPorta(Boolean porta) {
+		this.porta = porta;
+	}
+
+	public Boolean getMovimento() {
+		return movimento;
+	}
+
+	public void setMovimento(Boolean movimento) {
+		this.movimento = movimento;
+	}
+
+	public Boolean getAlarme() {
+		return alarme;
+	}
+
+	public void setAlarme(Boolean alarme) {
+		this.alarme = alarme;
+	}
+
+	public Boolean getInundacao() {
+		return inundacao;
+	}
+
+	public void setInundacao(Boolean inundacao) {
+		this.inundacao = inundacao;
+	}
+
+	public Boolean getPersiana() {
+		return persiana;
+	}
+
+	public void setPersiana(Boolean persiana) {
+		this.persiana = persiana;
+	}
+
+	public Boolean getForno() {
+		return forno;
+	}
+
+	public void setForno(Boolean forno) {
+		this.forno = forno;
+	}
+
+	public Boolean getLampada() {
+		return lampada;
+	}
+
+	public void setLampada(Boolean lampada) {
+		this.lampada = lampada;
+	}
+
+	public void setAquecedor(Boolean aquecedor) {
+		this.aquecedor = aquecedor;
+	}
+
+	public void setJanela(Boolean janela) {
+		this.janela = janela;
+	}
+
 	public Boolean getAc() {
 		return ac;
 	}
