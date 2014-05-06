@@ -4,7 +4,7 @@ import jess.*;
 
 public class Main {
 	public static void main(String[] args) throws JessException {
-		Rete r = new Rete();
+	/*	Rete r = new Rete();
 		Sala s = new Sala();
 		Sala s2 = new Sala();
 		Sala s3 = new Sala();
@@ -18,6 +18,40 @@ public class Main {
 		r.run();
 		System.out.println(s.getTemperatura());
 		System.out.println(s2.getTemperatura());
-		System.out.println(s3.getTemperatura());
+		System.out.println(s3.getTemperatura());*/
+		run();
+	}
+	
+	public static void run() throws JessException{
+		Rete r = new Rete();
+		Sala s = new Sala();
+		s.setTemperatura(12);
+		r.add(s);
+		r.batch("rules.clp");
+		
+		while(true){
+			r.updateObject(s);
+			try {
+				Thread.sleep(100);
+				if(s.getAquecedor()==1){
+					System.out.println("aquecedor ligado");
+					s.setTemperatura(s.getTemperatura()+1);
+					
+				}
+				if(s.getJanela()==1){
+					System.out.println("janela aberta");
+					s.setTemperatura(s.getTemperatura()-1);
+				}
+				
+				r.run();
+			} catch (JessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(s.getTemperatura());
+		}
 	}
 }
