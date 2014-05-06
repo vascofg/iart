@@ -3,11 +3,15 @@
 (defclass Sala Sala)
 
 (defrule baixa
-	?s <- (Sala) (Sala  {temperatura < 15}) => (modify ?s  (janela 0) (aquecedor 1) )
+	?s <- (Sala) (Sala  {temperatura <= 15} {ac != nil}) => (modify ?s  (janela FALSE) (aquecedor TRUE) )
+)
+
+(defrule baixa
+	?s <- (Sala) (Sala  {temperatura <= 15} ) => (modify ?s  (janela FALSE) (aquecedor TRUE) )
 )
 
 (defrule alta
-	?s <- (Sala) (Sala {temperatura > 30}) => (modify ?s (aquecedor 0) (janela 1) )
+	?s <- (Sala) (Sala {temperatura >= 30}) => (modify ?s (aquecedor FALSE) (janela TRUE) )
 )
 
 

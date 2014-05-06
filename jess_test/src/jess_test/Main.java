@@ -33,13 +33,13 @@ public class Main {
 			r.updateObject(s);
 			try {
 				Thread.sleep(100);
-				if(s.getAquecedor()==1){
-					System.out.println("aquecedor ligado");
+				if(s.getAquecedor()){
+					//System.out.println("aquecedor ligado");
 					s.setTemperatura(s.getTemperatura()+1);
 					
 				}
-				if(s.getJanela()==1){
-					System.out.println("janela aberta");
+				if(s.getJanela()){
+					//System.out.println("janela aberta");
 					s.setTemperatura(s.getTemperatura()-1);
 				}
 				
