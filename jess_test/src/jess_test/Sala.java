@@ -44,6 +44,7 @@ public class Sala {
 	private Boolean incendio;
 
 	/* dispositivos */
+
 	private Boolean aquecedor;
 	private Boolean janela;
 	private Boolean ac;
@@ -137,6 +138,7 @@ public class Sala {
 		public Sala build() {
 			return new Sala(this);
 		}
+
 	}
 
 	public Sala(Builder builder) {
