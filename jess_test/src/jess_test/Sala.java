@@ -1,35 +1,207 @@
 package jess_test;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 public class Sala {
-	/*sensores*/
-	int temperatura;
-	int luz;
-	int humidade;
-	
-	
-	/* dispositivos */
-	Boolean aquecedor;
-	Boolean janela;
-	Boolean ac;
-	Boolean maqCafe;
-	Boolean porta;
-	Boolean movimento;
-	Boolean alarme;
-	Boolean inundacao;
-	Boolean persiana;
-	Boolean forno;
-	Boolean lampada;
-	
-	
-	
-	
-	
-	public Boolean getAc() {
-		return ac;
+
+	static final int WC = 0;
+	static final int COZINHA = 1;
+	static final int QUARTO = 2;
+	static final int SALA = 3;
+	static final int SALAJANTAR = 4;
+
+	static final String[] TipoText = { "Casa de Banho", "Cozinha", "Quarto",
+			"Sala", "Sala de Jantar" };
+
+	static final BufferedImage[] TipoImgs = new BufferedImage[5];
+
+	static {
+		try {
+			TipoImgs[0] = ImageIO.read(new File("img/casadebanho.png"));
+			TipoImgs[1] = ImageIO.read(new File("img/cozinha.png"));
+			TipoImgs[2] = ImageIO.read(new File("img/quarto.png"));
+			TipoImgs[3] = ImageIO.read(new File("img/sala.png"));
+			TipoImgs[4] = ImageIO.read(new File("img/salaJantar.png"));
+		} catch (IOException e) {
+		}
 	}
 
-	public void setAc(Boolean ac) {
+	private String nome;
+
+	private int tipo;
+
+	/* sensores */
+	private int temperatura;
+	private int luz;
+	private int humidade;
+	private Boolean movimento;
+	private Boolean alarme;
+	private Boolean inundacao;
+	private Boolean incendio;
+
+	/* dispositivos */
+	private Boolean aquecedor;
+	private Boolean janela;
+	private Boolean ac;
+	private Boolean maqCafe;
+	private Boolean porta;
+	private Boolean persiana;
+	private Boolean forno;
+	private Boolean lampada;
+
+	public static class Builder {
+		private int tipo;
+
+		private String nome = "";
+		private int temperatura = 0;
+		private int luz = 0;
+		private int humidade = 0;
+		private Boolean movimento = false;
+		private Boolean alarme = false;
+		private Boolean inundacao = null;
+		private Boolean incendio = false;
+		private Boolean aquecedor = null;
+		private Boolean janela = null;
+		private Boolean ac = null;
+		private Boolean maqCafe = null;
+		private Boolean porta = false;
+		private Boolean persiana = null;
+		private Boolean forno = null;
+		private Boolean lampada = null;
+
+		public Builder(int val) {
+			tipo = val;
+		}
+
+		public Builder nome(String val) {
+			nome = val;
+			return this;
+		}
+
+		public Builder temperatura(int val) {
+			temperatura = val;
+			return this;
+		}
+
+		public Builder luz(int val) {
+			luz = val;
+			return this;
+		}
+
+		public Builder humidade(int val) {
+			humidade = val;
+			return this;
+		}
+
+		public Builder inundacao() {
+			inundacao = false;
+			return this;
+		}
+
+		public Builder aquecedor() {
+			aquecedor = false;
+			return this;
+		}
+
+		public Builder janela(boolean persiana) {
+			janela = false;
+			if (persiana) // se receber true, existe persiana
+				this.persiana = false;
+			return this;
+		}
+
+		public Builder ac() {
+			ac = false;
+			return this;
+		}
+
+		public Builder maqCafe() {
+			maqCafe = false;
+			return this;
+		}
+
+		public Builder forno() {
+			forno = false;
+			return this;
+		}
+
+		public Builder lampada() {
+			lampada = false;
+			return this;
+		}
+
+		public Sala build() {
+			return new Sala(this);
+		}
+	}
+
+	public Sala(Builder builder) {
+		nome = builder.nome;
+		tipo = builder.tipo;
+		temperatura = builder.temperatura;
+		luz = builder.luz;
+		humidade = builder.humidade;
+		movimento = builder.movimento;
+		alarme = builder.alarme;
+		inundacao = builder.inundacao;
+		incendio = builder.incendio;
+		aquecedor = builder.aquecedor;
+		janela = builder.janela;
+		ac = builder.ac;
+		maqCafe = builder.maqCafe;
+		porta = builder.porta;
+		persiana = builder.persiana;
+		forno = builder.forno;
+		lampada = builder.lampada;
+	}
+
+	public Sala(String nome, int tipo, int temperatura, int luz, int humidade,
+			Boolean inundacao, Boolean aquecedor, Boolean janela, Boolean ac,
+			Boolean maqCafe, Boolean persiana, Boolean forno, Boolean lampada) {
+		this.nome = nome;
+		this.tipo = tipo;
+		this.temperatura = temperatura;
+		this.luz = luz;
+		this.humidade = humidade;
+		this.inundacao = inundacao;
+		this.aquecedor = aquecedor;
+		this.janela = janela;
 		this.ac = ac;
+		this.maqCafe = maqCafe;
+		this.persiana = persiana;
+		this.forno = forno;
+		this.lampada = lampada;
+	}
+
+	public Sala(int tipo) {
+		this.tipo = tipo;
+		this.temperatura = 0;
+		this.luz = 0;
+		this.humidade = 0;
+		this.movimento = false;
+		this.alarme = false;
+		this.incendio = false;
+		this.porta = false;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 
 	public int getTemperatura() {
@@ -40,21 +212,116 @@ public class Sala {
 		this.temperatura = temperatura;
 	}
 
-	public boolean getAquecedor() {
+	public int getLuz() {
+		return luz;
+	}
+
+	public void setLuz(int luz) {
+		this.luz = luz;
+	}
+
+	public int getHumidade() {
+		return humidade;
+	}
+
+	public void setHumidade(int humidade) {
+		this.humidade = humidade;
+	}
+
+	public Boolean getMovimento() {
+		return movimento;
+	}
+
+	public void setMovimento(Boolean movimento) {
+		this.movimento = movimento;
+	}
+
+	public Boolean getAlarme() {
+		return alarme;
+	}
+
+	public void setAlarme(Boolean alarme) {
+		this.alarme = alarme;
+	}
+
+	public Boolean getInundacao() {
+		return inundacao;
+	}
+
+	public void setInundacao(Boolean inundacao) {
+		this.inundacao = inundacao;
+	}
+
+	public Boolean getIncendio() {
+		return incendio;
+	}
+
+	public void setIncendio(Boolean incendio) {
+		this.incendio = incendio;
+	}
+
+	public Boolean getAquecedor() {
 		return aquecedor;
 	}
 
-	public void setAquecedor(boolean aquecedor) {
+	public void setAquecedor(Boolean aquecedor) {
 		this.aquecedor = aquecedor;
 	}
 
-	public boolean getJanela() {
+	public Boolean getJanela() {
 		return janela;
 	}
 
-	public void setJanela(boolean janela) {
+	public void setJanela(Boolean janela) {
 		this.janela = janela;
 	}
 
-	
+	public Boolean getAc() {
+		return ac;
+	}
+
+	public void setAc(Boolean ac) {
+		this.ac = ac;
+	}
+
+	public Boolean getMaqCafe() {
+		return maqCafe;
+	}
+
+	public void setMaqCafe(Boolean maqCafe) {
+		this.maqCafe = maqCafe;
+	}
+
+	public Boolean getPorta() {
+		return porta;
+	}
+
+	public void setPorta(Boolean porta) {
+		this.porta = porta;
+	}
+
+	public Boolean getPersiana() {
+		return persiana;
+	}
+
+	public void setPersiana(Boolean persiana) {
+		this.persiana = persiana;
+	}
+
+	public Boolean getForno() {
+		return forno;
+	}
+
+	public void setForno(Boolean forno) {
+		this.forno = forno;
+	}
+
+	public Boolean getLampada() {
+		return lampada;
+	}
+
+	public void setLampada(Boolean lampada) {
+		this.lampada = lampada;
+	}
+
 }

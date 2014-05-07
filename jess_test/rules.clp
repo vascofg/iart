@@ -1,17 +1,18 @@
 (import jess_test.Sala)
+(import java.lang.Boolean)
 
 (defclass Sala Sala)
 
-(defrule baixa
-	?s <- (Sala) (Sala  {temperatura <= 15} {ac != nil}) => (modify ?s  (janela FALSE) (aquecedor TRUE) )
-)
+(bind ?true (new java.lang.Boolean TRUE)) /*because jess*/
+(bind ?false (new java.lang.Boolean FALSE))
 
 (defrule baixa
-	?s <- (Sala) (Sala  {temperatura <= 15} ) => (modify ?s  (janela FALSE) (aquecedor TRUE) )
+	?s <- (Sala) (Sala  {temperatura <= 15} {aquecedor != nil}) => (modify ?s (aquecedor ?true ) (janela ?false))
 )
+
 
 (defrule alta
-	?s <- (Sala) (Sala {temperatura >= 30}) => (modify ?s (aquecedor FALSE) (janela TRUE) )
+	?s <- (Sala) (Sala {temperatura >= 30}) => (modify ?s (aquecedor ?false) (janela ?true) )
 )
 
 
