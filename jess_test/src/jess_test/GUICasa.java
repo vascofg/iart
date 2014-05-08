@@ -136,9 +136,9 @@ public class GUICasa {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Sala s;
-					if (e.getActionCommand().equals("editar"))
+					if (Main.casa.salas[selectedIndex]!=null) //edit
 						s = Main.casa.salas[selectedIndex];
-					else {
+					else { //create
 						s = new Sala(Sala.WC);
 						Main.casa.salas[selectedIndex] = s;
 					}
@@ -222,14 +222,12 @@ public class GUICasa {
 				persiana.setSelected(s.getPersiana() != null);
 				forno.setSelected(s.getForno() != null);
 				lampada.setSelected(s.getLampada() != null);
-				guardar.setActionCommand("editar");
 				apagar.setEnabled(true);
 			} catch (IndexOutOfBoundsException | NullPointerException e) { // item
 																			// does
 																			// not
 																			// exist
 				resetAllInputs();
-				guardar.setActionCommand("criar");
 				apagar.setEnabled(false);
 			}
 		}
