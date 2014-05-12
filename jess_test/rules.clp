@@ -7,7 +7,7 @@
 (bind ?false (new java.lang.Boolean FALSE))
 
 (defrule baixa
-	?s <- (Sala) (Sala  {temperatura <= 15} {aquecedor != nil}) => (modify ?s (aquecedor ?true ) (janela ?false))
+	?s <- (Sala) (Sala  {temperatura <= 15}) => (aqueceQuarto ?s)
 )
 
 
@@ -16,3 +16,9 @@
 )
 
 
+(deffunction aqueceQuarto (?s)
+	(if (neq ?s.aquecedor nil) then
+		(modify ?s (aquecedor ?true)))
+	(if (neq ?s.janela nil) then
+		(modify ?s (janela ?false)))
+)

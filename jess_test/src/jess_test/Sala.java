@@ -74,8 +74,8 @@ public class Sala {
 		private Boolean forno = null;
 		private Boolean lampada = null;
 
-		public Builder(int val) {
-			tipo = val;
+		public Builder(int tipo) {
+			this.tipo = tipo;
 		}
 
 		public Builder nome(String val) {

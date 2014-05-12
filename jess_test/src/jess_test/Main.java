@@ -11,13 +11,13 @@ public class Main {
 		r = new Rete();
 		r.batch("rules.clp");
 		/**/
-		GUICasa.init();
-		// run();
+		//GUICasa.init();
+		run();
 	}
 
 	public static void run() throws JessException {
-		Sala s = casa.salas[0];
-
+		Sala s = new Sala.Builder(Sala.COZINHA).aquecedor().janela(true).build();
+		r.add(s);
 		while (true) {
 			try {
 				Thread.sleep(100);

@@ -163,8 +163,7 @@ public class GUICasa {
 			apagar.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if(Main.casa.salas[selectedIndex] != null)
-					{
+					if (Main.casa.salas[selectedIndex] != null) {
 						Main.casa.salas[selectedIndex] = null;
 						resetAllInputs();
 					}
@@ -283,6 +282,7 @@ public class GUICasa {
 		options.getRootPane().setDefaultButton(options.guardar); // set enter
 																	// action
 		frame.pack();
+		frame.setLocationRelativeTo(null); //center window
 		frame.setVisible(true);
 	}
 
