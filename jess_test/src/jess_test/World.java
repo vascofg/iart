@@ -1,15 +1,28 @@
 package jess_test;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class World {
+	static public int tempIdeal, luzIdeal, humidadeIdeal;
 	private double temperatura;
 	private double Luminosidade;
-	private double humidade;
-	private int hours;
+	private int humidade;
+	private int horas;
 	public int[] hum = { 50, 55, 60, 65, 70, 75, 80, 85, 90, 100 };
 	int arrN;
+	
+	public static Integer getTempIdeal() {
+		return tempIdeal;
+	}
+
+	public static Integer getLuzIdeal() {
+		return luzIdeal;
+	}
+
+	public static Integer getHumidadeIdeal() {
+		return humidadeIdeal;
+	}
+
 	public double getTemperatura() {
 		return temperatura;
 	}
@@ -26,66 +39,66 @@ public class World {
 		Luminosidade = luminosidade;
 	}
 
-	public double getHumidade() {
+	public int getHumidade() {
 		return humidade;
 	}
 
-	public void setHumidade(double humidade) {
+	public void setHumidade(int humidade) {
 		this.humidade = humidade;
 	}
 
-	public int getHours() {
-		return hours;
+	public int getHoras() {
+		return horas;
 	}
 
-	public void setHours(int hours) {
-		this.hours = hours;
+	public void setHoras(int horas) {
+		this.horas = horas;
 	}
 
 	public void init() {
 		setTemperatura(13);
 		setLuminosidade(0);
 		setHumidade(5);
-		setHours(0);
+		setHoras(0);
 	}
 
 	public void iteration() {
-		int tempH = getHours();
-		if (getHours() >= 23){
-			setHours(0);
+		int tempH = getHoras();
+		if (getHoras() >= 23) {
+			setHoras(0);
 			Random rand = new Random();
-			arrN = rand.nextInt(10) ;
-		}
-		else {
-			setHours(++tempH);
+			arrN = rand.nextInt(10);
+		} else {
+			setHoras(++tempH);
 
 		}
 		setTemperatura(calcTemp(tempH));
 		setLuminosidade(calcLuminosidade(tempH));
-		setHumidade( calcHumidade(arrN));
+		setHumidade(calcHumidade(arrN));
 	}
 
 	double calcTemp(int hours) {
 		Random rand = new Random();
 		double temp;
-		temp = Math.sin(hours / (24 / Math.PI)) * (30 + rand.nextInt(10)-5);
+		temp = Math.sin(hours / (24 / Math.PI)) * (30 + rand.nextInt(10) - 5);
 		return temp;
 	}
 
 	double calcLuminosidade(int hours) {
 		Random rand = new Random();
 		double lumen;
-		lumen = Math.sin(hours / (24 / Math.PI)) * (7500+ rand.nextInt(1000)-500) ;
-		if(lumen<0)
-			lumen=0;
+		lumen = Math.sin(hours / (24 / Math.PI))
+				* (7500 + rand.nextInt(1000) - 500);
+		if (lumen < 0)
+			lumen = 0;
 		return lumen;
 	}
 
-	double calcHumidade(int c) {
+	int calcHumidade(int c) {
 
 		Random rand = new Random();
 
-		int n = rand.nextInt(11)-5 ;
-		return hum[c]+n;
+		int n = rand.nextInt(11) - 5;
+		return hum[c] + n;
 	}
 }

@@ -6,6 +6,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -16,17 +17,27 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import GUI.CellPanel;
 import jess_test.Main;
 import jess_test.Sala;
+import jess_test.World;
 
 public class GUI {
 	private static JFrame frame;
 	private static StatePanel statePanel;
+	private static SettingsPanel settingsPanel;
+	static CellPanel[] components = new CellPanel[9];
+	private static Border selectedBorder = new LineBorder(Color.RED);
+
 	private static Dimension cellDimension = new Dimension(150, 150);
 	private static int selectedIndex = -1;
 
@@ -58,20 +69,25 @@ public class GUI {
 				if (Main.casa.salas[index] != null) {
 					temp.tipo = Main.casa.salas[index].getTipo();
 					tmpLabel.setText(Main.casa.salas[index].getNome());
-					tmpLabel.setMinimumSize(new Dimension(cellDimension.width, 0));
+					tmpLabel.setMinimumSize(new Dimension(cellDimension.width,
+							0));
 					tmpLabel.setHorizontalAlignment(SwingConstants.CENTER);
 					temp.add(tmpLabel, BorderLayout.PAGE_END);
 					temp.setPreferredSize(cellDimension);
 					temp.addMouseListener(mouseAdapter);
 					GUI.addComponent(contentPanel, temp, layout, c, j, i);
+					components[index] = temp;
 				}
-				
+
 			}
 		}
 		statePanel = new StatePanel();
 		c.fill = GridBagConstraints.BOTH;
-		c.gridheight = GridBagConstraints.REMAINDER;
+		c.gridheight = 3;
 		GUI.addComponent(contentPanel, statePanel, layout, c, 4, 0);
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		settingsPanel = new SettingsPanel();
+		GUI.addComponent(contentPanel, settingsPanel, layout, c, 0, 3);
 		frame.pack();
 		frame.setLocationRelativeTo(null); // center window
 		frame.setVisible(true);
@@ -88,6 +104,115 @@ public class GUI {
 
 	public static void updateState() {
 		statePanel.loadCell(selectedIndex);
+	}
+
+	public static void updateWorld() {
+		settingsPanel.updateWorld();
+	}
+
+	private static class SettingsPanel extends JPanel {
+		private static final long serialVersionUID = 1L;
+
+		private JLabel temperaturaMundo;
+		private JLabel luzMundo;
+		private JLabel humidadeMundo;
+		private JLabel horas;
+		private JSpinner tempIdeal;
+		private JSpinner luzIdeal;
+		private JSpinner humidadeIdeal;
+
+		private static Border border = new MatteBorder(1, 0, 0, 0, Color.black);
+
+		// TODO: sliders
+
+		public SettingsPanel() {
+			this.setBorder(border);
+			GridBagLayout layout = new GridBagLayout();
+			GridBagConstraints c = new GridBagConstraints();
+			this.setLayout(layout);
+
+			c.fill = GridBagConstraints.BOTH;
+			c.anchor = GridBagConstraints.NORTH;
+			c.weightx = 1;
+			c.weighty = 1;
+
+			int y = 0;
+
+			c.insets = new Insets(10, 0, 0, 0);
+
+			horas = new JLabel("Horas");
+			horas.setHorizontalAlignment(SwingConstants.CENTER);
+			horas.setFont(horas.getFont().deriveFont(16.0f));
+			GUI.addComponent(this, horas, layout, c, 0, y);
+
+			temperaturaMundo = new JLabel("Temperatura");
+			temperaturaMundo.setHorizontalAlignment(SwingConstants.CENTER);
+			temperaturaMundo.setFont(temperaturaMundo.getFont().deriveFont(
+					16.0f));
+			GUI.addComponent(this, temperaturaMundo, layout, c, 1, y);
+
+			luzMundo = new JLabel("Luminosidade");
+			luzMundo.setHorizontalAlignment(SwingConstants.CENTER);
+			luzMundo.setFont(luzMundo.getFont().deriveFont(16.0f));
+			GUI.addComponent(this, luzMundo, layout, c, 2, y);
+
+			humidadeMundo = new JLabel("Humidade");
+			humidadeMundo.setHorizontalAlignment(SwingConstants.CENTER);
+			humidadeMundo.setFont(humidadeMundo.getFont().deriveFont(16.0f));
+			GUI.addComponent(this, humidadeMundo, layout, c, 3, y++);
+
+			c.insets = new Insets(15, 12, 5, 12);
+
+			JLabel tmp = new JLabel("Condições ideais: ");
+			tmp.setHorizontalAlignment(SwingConstants.CENTER);
+			GUI.addComponent(this, tmp, layout, c, 0, y);
+
+			tempIdeal = new JSpinner(new SpinnerNumberModel(24, 16, 32, 1));
+			World.tempIdeal = 24;
+			GUI.addComponent(this, tempIdeal, layout, c, 1, y);
+			tempIdeal.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent arg0) {
+					World.tempIdeal = (int) ((JSpinner) arg0.getSource())
+							.getValue();
+				}
+			});
+
+			luzIdeal = new JSpinner(
+					new SpinnerNumberModel(7000, 0, 20000, 1000));
+			World.luzIdeal = 7000;
+			GUI.addComponent(this, luzIdeal, layout, c, 2, y);
+			luzIdeal.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent arg0) {
+					World.luzIdeal = (int) ((JSpinner) arg0.getSource())
+							.getValue();
+				}
+			});
+
+			humidadeIdeal = new JSpinner(new SpinnerNumberModel(50, 30, 70, 5));
+			World.humidadeIdeal = 50;
+			GUI.addComponent(this, humidadeIdeal, layout, c, 3, y);
+			humidadeIdeal.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent arg0) {
+					World.humidadeIdeal = (int) ((JSpinner) arg0
+							.getSource()).getValue();
+				}
+			});
+		}
+
+		public void updateWorld() {
+			temperaturaMundo.setText(String.format("%.1f",
+					Main.mundo.getTemperatura())
+					+ " ºC");
+			luzMundo.setText(String.format("%.1f", Main.mundo.getLuminosidade())
+					+ " lm");
+			humidadeMundo.setText(Main.mundo.getHumidade() + "%");
+			int horasVal = Main.mundo.getHoras();
+			horas.setText((horasVal < 10) ? ("0" + horasVal + ":00")
+					: (horasVal + ":00"));
+		}
 	}
 
 	private static class StatePanel extends JPanel {
@@ -184,6 +309,10 @@ public class GUI {
 
 		public void loadCell(int index) {
 			try {
+				if (selectedIndex >= 0 && index != selectedIndex) {
+					components[selectedIndex].setBorder(null);
+				}
+				components[index].setBorder(selectedBorder);
 				Sala s = Main.casa.salas[index];
 				temperatura.setText(s.getTemperatura() + " ºC");
 				luz.setText(s.getLuz() + " lm");

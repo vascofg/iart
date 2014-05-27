@@ -5,22 +5,25 @@ import GUI.GUI;
 
 public class Environment extends Thread {
 	private boolean go = true;
+	private static int worldIterations = 20;
 
 	@Override
 	public synchronized void start() {
-		for (Sala s : Main.casa.salas)
-			if (s != null)
-				try {
+		try {
+			for (Sala s : Main.casa.salas)
+				if (s != null)
 					Main.r.add(s);
-				} catch (JessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			Main.r.add(Main.mundo);
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		super.start();
 	}
 
 	@Override
 	public void run() {
+		int i = 0;
 		while (go) {
 			try {
 				for (Sala s : Main.casa.salas) {
@@ -36,6 +39,12 @@ public class Environment extends Thread {
 						}
 						Main.r.updateObject(s);
 					}
+				}
+				if (i-- == 0) {
+					Main.mundo.iteration();
+					Main.r.updateObject(Main.mundo);
+					GUI.updateWorld();
+					i = worldIterations;
 				}
 				Main.r.run();
 				GUI.updateState();

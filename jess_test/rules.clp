@@ -1,7 +1,9 @@
 (import jess_test.Sala)
+(import jess_test.World)
 (import java.lang.Boolean)
 
 (defclass Sala Sala)
+(defclass World World)
 
 (reset)
 
@@ -9,16 +11,16 @@
 (bind ?false (new java.lang.Boolean FALSE))
 
 (defrule baixa
-	?s <- (Sala  {temperatura <= 15}) => (aqueceQuarto ?s)
+	?s <- (Sala  {temperatura < (get-member World tempIdeal)}) => (aqueceQuarto ?s)
 )
 
-/*(defrule ideal
-	?s <- (Sala  {temperatura > 15 && temperatura < 30}) => (mantem ?s)
-)*/
+(defrule ideal
+	?s <- (Sala  {temperatura == (get-member World tempIdeal)}) => (mantem ?s)
+)
 
 
 (defrule alta
-	?s <- (Sala {temperatura >= 30}) => (arrefeceQuarto ?s)
+	?s <- (Sala {temperatura > (get-member World tempIdeal)}) => (arrefeceQuarto ?s)
 )
 
 
