@@ -1,9 +1,8 @@
-package jess_test;
+package GUI;
 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -24,34 +22,24 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
+import jess_test.Main;
+import jess_test.Sala;
+
 public class GUICasa {
 
 	private static JFrame frame;
 	private static OptionsPanel options;
-	private static Border optionsBorder = new MatteBorder(0, 1, 0, 0,
-			Color.black);
 	private static Border selectedBorder = new LineBorder(Color.blue);
 	static ArrayList<CellPanel> components = new ArrayList<CellPanel>();
 	private static Dimension cellDimension = new Dimension(100, 100);
-	private static Dimension optionsPanelDimension = new Dimension(250, 0);
 
 	private static int selectedIndex = -1;
 
-	private static class CellPanel extends JPanel {
-		private static final long serialVersionUID = 1L;
-		int tipo = -1;
-
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			if (tipo >= 0)
-				g.drawImage(Sala.TipoImgs[tipo], 0, 0, null);
-		}
-	}
-
 	private static class OptionsPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
-
+		
+		private static Border border = new MatteBorder(0, 1, 0, 0,
+				Color.black);
 		private JTextField nome;
 		private JComboBox<String> tipo;
 		private JCheckBox inundacao;
@@ -67,6 +55,7 @@ public class GUICasa {
 		private JButton ok;
 
 		public OptionsPanel() {
+			this.setBorder(border);
 			GridBagLayout layout = new GridBagLayout();
 			GridBagConstraints c = new GridBagConstraints();
 			this.setLayout(layout);
@@ -81,7 +70,7 @@ public class GUICasa {
 			nome.setHorizontalAlignment(SwingConstants.CENTER);
 			nome.setEnabled(false);
 			nome.setFont(nome.getFont().deriveFont(32.0f));
-			addComponent(this, nome, layout, c, 0, 0);
+			GUI.addComponent(this, nome, layout, c, 0, 0);
 
 			tipo = new JComboBox<String>(Sala.TipoText);
 			tipo.setEnabled(false);
@@ -94,40 +83,40 @@ public class GUICasa {
 					components.get(selectedIndex).repaint();
 				}
 			});
-			addComponent(this, tipo, layout, c, 0, 1);
+			GUI.addComponent(this, tipo, layout, c, 0, 1);
 
 			inundacao = new JCheckBox("Sensor inundação");
 			inundacao.setEnabled(false);
 			c.gridwidth = 1;
-			addComponent(this, inundacao, layout, c, 0, 2);
+			GUI.addComponent(this, inundacao, layout, c, 0, 2);
 
 			aquecedor = new JCheckBox("Aquecedor");
 			aquecedor.setEnabled(false);
-			addComponent(this, aquecedor, layout, c, 1, 2);
+			GUI.addComponent(this, aquecedor, layout, c, 1, 2);
 
 			janela = new JCheckBox("Janela");
 			janela.setEnabled(false);
-			addComponent(this, janela, layout, c, 0, 3);
+			GUI.addComponent(this, janela, layout, c, 0, 3);
 
 			ac = new JCheckBox("Ar condicionado");
 			ac.setEnabled(false);
-			addComponent(this, ac, layout, c, 1, 3);
+			GUI.addComponent(this, ac, layout, c, 1, 3);
 
 			maqCafe = new JCheckBox("Máquina de café");
 			maqCafe.setEnabled(false);
-			addComponent(this, maqCafe, layout, c, 0, 4);
+			GUI.addComponent(this, maqCafe, layout, c, 0, 4);
 
 			persiana = new JCheckBox("Persiana");
 			persiana.setEnabled(false);
-			addComponent(this, persiana, layout, c, 1, 4);
+			GUI.addComponent(this, persiana, layout, c, 1, 4);
 
 			forno = new JCheckBox("Forno");
 			forno.setEnabled(false);
-			addComponent(this, forno, layout, c, 0, 5);
+			GUI.addComponent(this, forno, layout, c, 0, 5);
 
 			lampada = new JCheckBox("Lâmpada");
 			lampada.setEnabled(false);
-			addComponent(this, lampada, layout, c, 1, 5);
+			GUI.addComponent(this, lampada, layout, c, 1, 5);
 
 			guardar = new JButton("Guardar", null);
 			guardar.setEnabled(false);
@@ -136,10 +125,12 @@ public class GUICasa {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Sala s;
-					if (Main.casa.salas[selectedIndex]!=null) //edit
+					if (Main.casa.salas[selectedIndex] != null) // edit
 						s = Main.casa.salas[selectedIndex];
-					else { //create
+					else { // create
 						s = new Sala(Sala.WC);
+						// TODO: retirar
+						s.setTemperatura((int) Math.round(Math.random() * 100));
 						Main.casa.salas[selectedIndex] = s;
 					}
 
@@ -156,7 +147,7 @@ public class GUICasa {
 					apagar.setEnabled(true);
 				}
 			});
-			addComponent(this, guardar, layout, c, 0, 6);
+			GUI.addComponent(this, guardar, layout, c, 0, 6);
 
 			apagar = new JButton("Apagar", null);
 			apagar.setEnabled(false);
@@ -169,7 +160,18 @@ public class GUICasa {
 					}
 				}
 			});
-			addComponent(this, apagar, layout, c, 1, 6);
+			GUI.addComponent(this, apagar, layout, c, 1, 6);
+
+			c.gridwidth = 2;
+			ok = new JButton("OK", null);
+			ok.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					frame.dispose();
+					Main.houseReady();
+				}
+			});
+			GUI.addComponent(this, ok, layout, c, 0, 7);
 		}
 
 		private void enableAllInputs() {
@@ -243,7 +245,7 @@ public class GUICasa {
 				((JPanel) e.getComponent()).setBorder(null);
 		}
 
-		public void mouseClicked(MouseEvent e) {
+		public void mousePressed(MouseEvent e) {
 			options.loadCell(Integer.parseInt(e.getComponent().getName()));
 		};
 	};
@@ -252,7 +254,6 @@ public class GUICasa {
 		frame = new JFrame();
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Main.casa = new Casa();
 		GridBagLayout layout = new GridBagLayout();
 		Container contentPanel = frame.getContentPane();
 		CellPanel temp = null;
@@ -268,33 +269,17 @@ public class GUICasa {
 				temp.setPreferredSize(cellDimension);
 				temp.addMouseListener(mouseAdapter);
 				GUICasa.components.add(index, temp);
-				addComponent(contentPanel, temp, layout, c, j, i);
+				GUI.addComponent(contentPanel, temp, layout, c, j, i);
 			}
 		}
 		options = new OptionsPanel();
-		options.setBorder(optionsBorder);
-		options.setPreferredSize(optionsPanelDimension);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = GridBagConstraints.REMAINDER;
-		addComponent(contentPanel, options, layout, c, 4, 0);
+		GUI.addComponent(contentPanel, options, layout, c, 4, 0);
 		options.getRootPane().setDefaultButton(options.guardar); // set enter
 																	// action
 		frame.pack();
-		frame.setLocationRelativeTo(null); //center window
+		frame.setLocationRelativeTo(null); // center window
 		frame.setVisible(true);
-	}
-
-	private static void addComponent(Container container, JComponent component,
-			GridBagLayout layout, GridBagConstraints constraints, int gridX,
-			int gridY) {
-		constraints.gridx = gridX;
-		constraints.gridy = gridY;
-		layout.setConstraints(component, constraints);
-		container.add(component);
-
-	}
-
-	public static void main(String[] args) {
-		GUICasa.init();
 	}
 }

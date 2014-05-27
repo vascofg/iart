@@ -1,46 +1,24 @@
 package jess_test;
 
+import GUI.GUI;
+import GUI.GUICasa;
 import jess.*;
 
 public class Main {
-	static Casa casa;
+	public static Casa casa;
 	static Rete r;
+	private static Environment environmentThread;
 
 	public static void main(String[] args) throws JessException {
 		casa = new Casa();
 		r = new Rete();
 		r.batch("rules.clp");
-		/**/
-		//GUICasa.init();
-		run();
+		environmentThread = new Environment();
+		GUICasa.init();
 	}
 
-	public static void run() throws JessException {
-		Sala s = new Sala.Builder(Sala.COZINHA).aquecedor().janela(true).build();
-		r.add(s);
-		while (true) {
-			try {
-				Thread.sleep(100);
-				if (Boolean.TRUE.equals(s.getAquecedor())) {
-					// System.out.println("aquecedor ligado");
-					s.setTemperatura(s.getTemperatura() + 1);
-
-				}
-				if (Boolean.TRUE.equals(s.getJanela())) {
-					// System.out.println("janela aberta");
-					s.setTemperatura(s.getTemperatura() - 1);
-				}
-
-				r.run();
-			} catch (JessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(s.getTemperatura());
-			r.updateObject(s);
-		}
+	public static void houseReady() {
+		GUI.init();
+		environmentThread.start();
 	}
 }

@@ -8,16 +8,16 @@ import javax.imageio.ImageIO;
 
 public class Sala {
 
-	static final int WC = 0;
-	static final int COZINHA = 1;
-	static final int QUARTO = 2;
-	static final int SALA = 3;
-	static final int SALAJANTAR = 4;
+	public static final int WC = 0;
+	public static final int COZINHA = 1;
+	public static final int QUARTO = 2;
+	public static final int SALA = 3;
+	public static final int SALAJANTAR = 4;
 
-	static final String[] TipoText = { "Casa de Banho", "Cozinha", "Quarto",
+	public static final String[] TipoText = { "Casa de Banho", "Cozinha", "Quarto",
 			"Sala", "Sala de Jantar" };
 
-	static final BufferedImage[] TipoImgs = new BufferedImage[5];
+	public static final BufferedImage[] TipoImgs = new BufferedImage[5];
 
 	static {
 		try {
