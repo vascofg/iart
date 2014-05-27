@@ -14,7 +14,28 @@ public class Main {
 		r = new Rete();
 		r.batch("rules.clp");
 		environmentThread = new Environment();
+		
 		GUICasa.init();
+		World mundo= new World();
+		mundo.init();
+		while(true){
+			try {
+				Thread.sleep(1000);
+				mundo.iteration();
+				System.out.println("horas :"+(float)mundo.getHours());
+				System.out.println("temp :"+(float)mundo.getTemperatura());
+				System.out.println("lux :"+(float)mundo.getLuminosidade());
+				if(mundo.getHumidade()>90)
+					System.out.println("chuva forte");
+				
+				System.out.println("humidade :" + mundo.getHumidade()+"\n");
+				
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	public static void houseReady() {
