@@ -5,7 +5,7 @@ import GUI.GUI;
 
 public class Environment extends Thread {
 	private boolean go = true;
-	private static int worldIterations = 20;
+	private static int worldIterations = 2;
 
 	@Override
 	public synchronized void start() {
@@ -29,13 +29,19 @@ public class Environment extends Thread {
 				for (Sala s : Main.casa.salas) {
 					if (s != null) {
 						if (Boolean.TRUE.equals(s.getAquecedor())) {
-							// System.out.println("aquecedor ligado");
+							//System.out.println(s.getTemperatura()+"    "+Main.mundo.getTemperatura());
 							s.setTemperatura(s.getTemperatura() + 1);
 
 						}
 						if (Boolean.TRUE.equals(s.getJanela())) {
-							// System.out.println("janela aberta");
-							s.setTemperatura(s.getTemperatura() - 1);
+							//System.out.println(s.getTemperatura()+"    "+Main.mundo.getTemperatura());
+								if( Main.mundo.getTemperatura()!=s.getTemperatura()) {
+							 
+							s.setTemperatura((float) (0.5*(Main.mundo.getTemperatura() - s.getTemperatura()) +s.getTemperatura()));
+						}
+							
+						}else{
+							s.setTemperatura((float) (0.05*(Main.mundo.getTemperatura() - s.getTemperatura()) +s.getTemperatura()));
 						}
 						Main.r.updateObject(s);
 					}
@@ -48,7 +54,7 @@ public class Environment extends Thread {
 				}
 				Main.r.run();
 				GUI.updateState();
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			} catch (JessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

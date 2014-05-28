@@ -35,7 +35,7 @@ public class Sala {
 	private int tipo;
 
 	/* sensores */
-	private int temperatura;
+	private float temperatura;
 	private int luz;
 	private int humidade;
 	private Boolean movimento;
@@ -58,7 +58,7 @@ public class Sala {
 		private int tipo;
 
 		private String nome = "";
-		private int temperatura = 0;
+		private float temperatura = 0;
 		private int luz = 0;
 		private int humidade = 0;
 		private Boolean movimento = false;
@@ -83,7 +83,7 @@ public class Sala {
 			return this;
 		}
 
-		public Builder temperatura(int val) {
+		public Builder temperatura(float val) {
 			temperatura = val;
 			return this;
 		}
@@ -161,7 +161,7 @@ public class Sala {
 		lampada = builder.lampada;
 	}
 
-	public Sala(String nome, int tipo, int temperatura, int luz, int humidade,
+	public Sala(String nome, int tipo, float temperatura, int luz, int humidade,
 			Boolean inundacao, Boolean aquecedor, Boolean janela, Boolean ac,
 			Boolean maqCafe, Boolean persiana, Boolean forno, Boolean lampada) {
 		this.nome = nome;
@@ -206,11 +206,11 @@ public class Sala {
 		this.tipo = tipo;
 	}
 
-	public int getTemperatura() {
+	public float getTemperatura() {
 		return temperatura;
 	}
 
-	public void setTemperatura(int temperatura) {
+	public void setTemperatura(float temperatura) {
 		this.temperatura = temperatura;
 	}
 

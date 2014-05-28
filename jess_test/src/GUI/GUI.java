@@ -314,7 +314,7 @@ public class GUI {
 				}
 				components[index].setBorder(selectedBorder);
 				Sala s = Main.casa.salas[index];
-				temperatura.setText(s.getTemperatura() + " ºC");
+				temperatura.setText(String.format("%.1f", s.getTemperatura()) + " ºC");
 				luz.setText(s.getLuz() + " lm");
 
 				if (s.getMovimento() == null)
