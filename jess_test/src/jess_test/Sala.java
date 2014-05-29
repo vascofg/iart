@@ -35,8 +35,8 @@ public class Sala {
 	private int tipo;
 
 	/* sensores */
-	private float temperatura;
-	private int luz;
+	public float temperatura;
+	public int luz;
 	private int humidade;
 	private Boolean movimento;
 	private Boolean alarme;
@@ -53,6 +53,7 @@ public class Sala {
 	private Boolean persiana;
 	private Boolean forno;
 	private Boolean lampada;
+	private Boolean antesLampada;
 
 	public static class Builder {
 		private int tipo;
@@ -188,6 +189,7 @@ public class Sala {
 		this.alarme = false;
 		this.incendio = false;
 		this.porta = false;
+		this.antesLampada=false;
 	}
 
 	public String getNome() {
@@ -325,5 +327,14 @@ public class Sala {
 	public void setLampada(Boolean lampada) {
 		this.lampada = lampada;
 	}
+
+	public Boolean getAntesLampada() {
+		return antesLampada;
+	}
+
+	public void setAntesLampada(Boolean antesLampada) {
+		this.antesLampada = antesLampada;
+	}
+	
 
 }

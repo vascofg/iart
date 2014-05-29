@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class World {
 	static public int tempIdeal, luzIdeal, humidadeIdeal;
-	private double temperatura;
+	static public double temperatura;
 	private double Luminosidade;
 	private int humidade;
 	private int horas;

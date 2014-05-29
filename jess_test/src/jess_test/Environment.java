@@ -27,6 +27,7 @@ public class Environment extends Thread {
 		while (go) {
 			try {
 				for (Sala s : Main.casa.salas) {
+					
 					if (s != null) {
 						if (Boolean.TRUE.equals(s.getAquecedor())) {
 							//System.out.println(s.getTemperatura()+"    "+Main.mundo.getTemperatura());
@@ -37,12 +38,38 @@ public class Environment extends Thread {
 							//System.out.println(s.getTemperatura()+"    "+Main.mundo.getTemperatura());
 								if( Main.mundo.getTemperatura()!=s.getTemperatura()) {
 							 
-							s.setTemperatura((float) (0.5*(Main.mundo.getTemperatura() - s.getTemperatura()) +s.getTemperatura()));
+							s.setTemperatura((float) (0.1*(Main.mundo.getTemperatura() - s.getTemperatura()) +s.getTemperatura()));
 						}
 							
 						}else{
 							s.setTemperatura((float) (0.05*(Main.mundo.getTemperatura() - s.getTemperatura()) +s.getTemperatura()));
 						}
+						
+						if(Boolean.TRUE.equals(s.getAc())){
+							s.setTemperatura(s.getTemperatura() - 1);
+						}
+						
+						if(Boolean.TRUE.equals(s.getLampada())){
+							if(! s.getAntesLampada() != s.getLampada()){
+							s.setAntesLampada(true);
+							s.setLuz(s.getLuz()+800);
+							}
+						}
+						if(Boolean.FALSE.equals(s.getLampada())){
+							if(! s.getAntesLampada() != s.getLampada()){
+							s.setAntesLampada(true);
+							s.setLuz(s.getLuz()-800);
+							}
+						}
+						
+						if(Boolean.TRUE.equals(s.getPersiana())){
+							s.setLuz((int) (s.getLuz() + 0.3 * Main.mundo.getLuminosidade()));
+						}
+						
+						if(Boolean.FALSE.equals(s.getPersiana())){
+							s.setLuz((int) (s.getLuz() - 0.6 * Main.mundo.getLuminosidade()));
+						}
+						
 						Main.r.updateObject(s);
 					}
 				}
