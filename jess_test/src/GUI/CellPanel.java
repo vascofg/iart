@@ -14,6 +14,7 @@ class CellPanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (tipo >= 0)
-			g.drawImage(Sala.TipoImgs[tipo], 0, 0, this.getWidth(), this.getHeight(), null);
+			g.drawImage(Sala.TipoImgs[tipo], 0, 0, this.getWidth(),
+					this.getHeight(), null);
 	}
 }

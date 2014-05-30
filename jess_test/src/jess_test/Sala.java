@@ -48,7 +48,6 @@ public class Sala {
 	private Boolean janela;
 	private Boolean ac;
 	private Boolean maqCafe;
-	private Boolean porta;
 	private Boolean persiana;
 	private Boolean forno;
 	private Boolean lampada;
@@ -69,7 +68,6 @@ public class Sala {
 		private Boolean janela = null;
 		private Boolean ac = null;
 		private Boolean maqCafe = null;
-		private Boolean porta = false;
 		private Boolean persiana = null;
 		private Boolean forno = null;
 		private Boolean lampada = null;
@@ -149,7 +147,6 @@ public class Sala {
 		janela = builder.janela;
 		ac = builder.ac;
 		maqCafe = builder.maqCafe;
-		porta = builder.porta;
 		persiana = builder.persiana;
 		forno = builder.forno;
 		lampada = builder.lampada;
@@ -179,7 +176,6 @@ public class Sala {
 		this.movimento = false;
 		this.alarme = false;
 		this.incendio = false;
-		this.porta = false;
 		this.antesLampada = false;
 		this.antesPersiana = false;
 	}
@@ -278,14 +274,6 @@ public class Sala {
 
 	public void setMaqCafe(Boolean maqCafe) {
 		this.maqCafe = maqCafe;
-	}
-
-	public Boolean getPorta() {
-		return porta;
-	}
-
-	public void setPorta(Boolean porta) {
-		this.porta = porta;
 	}
 
 	public Boolean getPersiana() {

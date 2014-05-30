@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -46,7 +47,7 @@ import jess_test.World;
 public class GUI {
 	private static JFrame frame;
 	private static StatePanel statePanel;
-	private static SettingsPanel settingsPanel;
+	public static SettingsPanel settingsPanel;
 	static CellPanel[] components = new CellPanel[9];
 	private static Border selectedBorder = new LineBorder(Color.RED);
 	private static final int BLINKING_RATE = 500; // alarm blink rate
@@ -130,11 +131,7 @@ public class GUI {
 		statePanel.loadCell(selectedIndex);
 	}
 
-	public static void updateWorld() {
-		settingsPanel.updateWorld();
-	}
-
-	private static class SettingsPanel extends JPanel {
+	public static class SettingsPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
 
 		private JLabel temperaturaMundo;
@@ -143,6 +140,7 @@ public class GUI {
 		private JLabel horas;
 		private JSpinner forno;
 		private JSpinner maqCafe;
+		private JLabel consumoEnergetico;
 
 		private static Border border = new MatteBorder(1, 0, 0, 0, Color.black);
 
@@ -236,8 +234,7 @@ public class GUI {
 						World.poupanca = true;
 					else
 						World.poupanca = false;
-						
-					
+
 				}
 			});
 
@@ -276,7 +273,7 @@ public class GUI {
 				}
 			});
 
-			GUI.addComponent(this, new JLabel("Maq. Café",
+			GUI.addComponent(this, new JLabel("Máq. Café",
 					SwingConstants.CENTER), layout, c, 2, y);
 			sdm = new SpinnerDateModel(new Date(0), null, null,
 					Calendar.HOUR_OF_DAY);
@@ -310,6 +307,19 @@ public class GUI {
 							.getValue()).getHours();
 				}
 			});
+
+			temp = new JPanel();
+			temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
+			consumoEnergetico = new JLabel("W", SwingConstants.CENTER);
+			consumoEnergetico.setFont(consumoEnergetico.getFont().deriveFont(
+					16.0f));
+			consumoEnergetico.setAlignmentX(CENTER_ALIGNMENT);
+			JLabel tempL = new JLabel("Consumo energético",
+					SwingConstants.CENTER);
+			tempL.setAlignmentX(CENTER_ALIGNMENT);
+			temp.add(tempL);
+			temp.add(consumoEnergetico);
+			GUI.addComponent(this, temp, layout, c, 4, y);
 
 			c.gridheight = 3;
 			JButton emergencia = new JButton("Simular Emergência", null);
@@ -380,6 +390,10 @@ public class GUI {
 			horas.setText((horasVal < 10) ? ("0" + horasVal + ":00")
 					: (horasVal + ":00"));
 		}
+
+		public void updatePowerConsumption() {
+			consumoEnergetico.setText(World.consumoEnergetico + "W");
+		}
 	}
 
 	private static class StatePanel extends JPanel {
@@ -388,7 +402,6 @@ public class GUI {
 		private static Border border = new MatteBorder(0, 1, 0, 0, Color.black);
 		private JLabel temperatura;
 		private JLabel luz;
-		private Semaphore porta;
 		private Semaphore inundacao;
 		private Semaphore movimento;
 		private Semaphore alarme;
@@ -441,37 +454,33 @@ public class GUI {
 			inundacao.setEnabled(false);
 			GUI.addComponent(this, inundacao, layout, c, 1, y++);
 
-			porta = new Semaphore("Porta");
-			porta.setEnabled(false);
-			GUI.addComponent(this, porta, layout, c, 0, y);
-
 			aquecedor = new Semaphore("Aquecedor");
 			aquecedor.setEnabled(false);
-			GUI.addComponent(this, aquecedor, layout, c, 1, y++);
+			GUI.addComponent(this, aquecedor, layout, c, 0, y);
 
 			janela = new Semaphore("Janela");
 			janela.setEnabled(false);
-			GUI.addComponent(this, janela, layout, c, 0, y);
+			GUI.addComponent(this, janela, layout, c, 1, y++);
 
 			ac = new Semaphore("Ar condicionado");
 			ac.setEnabled(false);
-			GUI.addComponent(this, ac, layout, c, 1, y++);
+			GUI.addComponent(this, ac, layout, c, 0, y);
 
 			maqCafe = new Semaphore("Máquina de café");
 			maqCafe.setEnabled(false);
-			GUI.addComponent(this, maqCafe, layout, c, 0, y);
+			GUI.addComponent(this, maqCafe, layout, c, 1, y++);
 
 			persiana = new Semaphore("Persiana");
 			persiana.setEnabled(false);
-			GUI.addComponent(this, persiana, layout, c, 1, y++);
+			GUI.addComponent(this, persiana, layout, c, 0, y);
 
 			forno = new Semaphore("Forno");
 			forno.setEnabled(false);
-			GUI.addComponent(this, forno, layout, c, 0, y);
+			GUI.addComponent(this, forno, layout, c, 1, y++);
 
 			lampada = new Semaphore("Lâmpada");
 			lampada.setEnabled(false);
-			GUI.addComponent(this, lampada, layout, c, 1, y++);
+			GUI.addComponent(this, lampada, layout, c, 0, y);
 		}
 
 		public void loadCell(int index) {
@@ -485,10 +494,8 @@ public class GUI {
 						+ " ºC");
 				luz.setText(s.getLuz() + " lm");
 
-				
-					movimento.setEnabled(true);
-					movimento.setSelected(s.getMovimento());
-				
+				movimento.setEnabled(true);
+				movimento.setSelected(s.getMovimento());
 
 				if (s.getAlarme() == null)
 					alarme.setEnabled(false);
@@ -509,13 +516,6 @@ public class GUI {
 				else {
 					inundacao.setEnabled(true);
 					inundacao.setSelected(s.getInundacao());
-				}
-
-				if (s.getPorta() == null)
-					porta.setEnabled(false);
-				else {
-					porta.setEnabled(true);
-					porta.setSelected(s.getPorta());
 				}
 
 				if (s.getAquecedor() == null)

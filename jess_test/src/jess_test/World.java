@@ -8,10 +8,11 @@ public class World {
 	static public double luminosidade;
 	static public boolean poupanca;
 	static public int humidade;
-	private int horas;
+	static public int horas;
 	static public boolean forno = false, maqCafe = false;
 	static public int horaForno;
 	static public int horaMaqCafe;
+	static public int consumoEnergetico;
 	public int[] hum = { 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 };
 	int arrN;
 
@@ -32,7 +33,7 @@ public class World {
 	}
 
 	public void setTemperatura(double temperatura) {
-		this.temperatura = temperatura;
+		World.temperatura = temperatura;
 	}
 
 	public double getLuminosidade() {
@@ -40,7 +41,7 @@ public class World {
 	}
 
 	public void setLuminosidade(double luminosidade) {
-		this.luminosidade = luminosidade;
+		World.luminosidade = luminosidade;
 	}
 
 	public int getHumidade() {
@@ -48,7 +49,7 @@ public class World {
 	}
 
 	public void setHumidade(int humidade) {
-		this.humidade = humidade;
+		World.humidade = humidade;
 	}
 
 	public int getHoras() {
@@ -56,7 +57,7 @@ public class World {
 	}
 
 	public void setHoras(int horas) {
-		this.horas = horas;
+		World.horas = horas;
 	}
 
 	public void init() {
@@ -65,7 +66,7 @@ public class World {
 		setHumidade(5);
 		setHoras(0);
 		setPoupanca(false);
-		
+
 	}
 
 	public void iteration() {
@@ -115,6 +116,5 @@ public class World {
 	public static void setPoupanca(boolean poupanca) {
 		World.poupanca = poupanca;
 	}
-	
-	
+
 }

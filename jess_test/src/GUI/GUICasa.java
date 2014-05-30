@@ -140,8 +140,7 @@ public class GUICasa {
 						s = Main.casa.salas[selectedIndex];
 					else { // create
 						s = new Sala(Sala.WC);
-						// TODO: retirar
-						s.setTemperatura((int) Math.round(Math.random() * 100));
+						s.setTemperatura((int) Math.round(Math.random() * 11) + 10);// 10-20
 						Main.casa.salas[selectedIndex] = s;
 					}
 
@@ -168,7 +167,7 @@ public class GUICasa {
 				public void actionPerformed(ActionEvent e) {
 					if (Main.casa.salas[selectedIndex] != null) {
 						Main.casa.salas[selectedIndex] = null;
-						if(Main.casa.getNumSalas()==0)
+						if (Main.casa.getNumSalas() == 0)
 							ok.setEnabled(false);
 						resetAllInputs();
 					}

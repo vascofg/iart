@@ -15,7 +15,6 @@ public class Environment extends Thread {
 					Main.r.add(s);
 			Main.r.add(Main.mundo);
 		} catch (JessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		super.start();
@@ -26,11 +25,19 @@ public class Environment extends Thread {
 		int i = 0;
 		while (go) {
 			try {
+				World.consumoEnergetico = 0;
+				Main.r.run();
+				if (i-- == 0) {
+					Main.mundo.iteration();
+					Main.r.updateObject(Main.mundo);
+					GUI.settingsPanel.updateWorld();
+					i = worldIterations;
+				}
+				GUI.updateState();
 				for (Sala s : Main.casa.salas) {
-
 					if (s != null) {
 						if (Boolean.TRUE.equals(s.getAquecedor())) {
-							// System.out.println(s.getTemperatura()+"    "+Main.mundo.getTemperatura());
+							World.consumoEnergetico += 1550;
 							s.setTemperatura(s.getTemperatura() + 1);
 
 						}
@@ -51,6 +58,7 @@ public class Environment extends Thread {
 						}
 
 						if (Boolean.TRUE.equals(s.getAc())) {
+							World.consumoEnergetico += 1350;
 							s.setTemperatura(s.getTemperatura() - 1);
 						}
 
@@ -84,7 +92,7 @@ public class Environment extends Thread {
 								}
 							} else {
 								if (Boolean.FALSE.equals(s.getLampada())) {
-									if (s.getAntesLampada()!= s.getLampada()) {
+									if (s.getAntesLampada() != s.getLampada()) {
 										s.setAntesLampada(false);
 										s.setLuz((int) (0.1 * Main.mundo
 												.getLuminosidade()));
@@ -97,6 +105,7 @@ public class Environment extends Thread {
 						}
 
 						if (Boolean.TRUE.equals(s.getLampada())) {
+							World.consumoEnergetico += 40;
 							if (s.getAntesLampada() ^ s.getLampada()) {
 								s.setAntesLampada(true);
 								s.setLuz(s.getLuz() + 1200);
@@ -110,24 +119,37 @@ public class Environment extends Thread {
 									s.setLuz(0);
 							}
 						}
+						if (s.getForno() != null) {
+							if (World.forno) {
+								if (World.horas == World.horaForno)
+									s.setForno(true);
+								else
+									s.setForno(false);
+							} else
+								s.setForno(false);
+						}
+						if (s.getMaqCafe() != null) {
+							if (World.maqCafe) {
+								if (World.horas == World.horaMaqCafe)
+									s.setMaqCafe(true);
+								else
+									s.setMaqCafe(false);
+							} else
+								s.setMaqCafe(false);
+						}
+						if (Boolean.TRUE.equals(s.getForno()))
+							World.consumoEnergetico += 1500;
 
+						if (Boolean.TRUE.equals(s.getMaqCafe()))
+							World.consumoEnergetico += 600;
 						Main.r.updateObject(s);
 					}
 				}
-				if (i-- == 0) {
-					Main.mundo.iteration();
-					Main.r.updateObject(Main.mundo);
-					GUI.updateWorld();
-					i = worldIterations;
-				}
-				Main.r.run();
-				GUI.updateState();
+				GUI.settingsPanel.updatePowerConsumption();
 				Thread.sleep(1000);
 			} catch (JessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -15,11 +15,11 @@ public class Main {
 		r = new Rete();
 		r.batch("rules.clp");
 		environmentThread = new Environment();
-		
+
 		GUICasa.init();
 		mundo = new World();
 		mundo.init();
-		
+
 	}
 
 	public static void houseReady() {
