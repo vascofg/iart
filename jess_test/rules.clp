@@ -77,13 +77,19 @@
 			(if (neq ?s.janela nil) then
 				(modify ?s (janela ?*false*))
 				(modify ?s (aquecedor ?*true*))
+				(if (neq ?s.ac nil) then
+					(modify ?s (ac ?*false*)))
 			else
-				(modify ?s (aquecedor ?*true*)))
+				(modify ?s (aquecedor ?*true*))
+				(if (neq ?s.ac nil) then
+					(modify ?s (ac ?*false*))))
 		else
 			(if (neq ?s.janela nil) then
 				 (if (> (- (get-member World temperatura) ?s.temperatura) 5) then
 				 	(if (< (get-member World humidade) 85) then
-					(modify ?s (janela ?*true*)))
+					(modify ?s (janela ?*true*))
+					(if (neq ?s.ac nil) then
+					(modify ?s (ac ?*false*))))
 				else	
 					(modify ?s (janela ?*false*)))))
 	else
@@ -91,18 +97,22 @@
 			(if (> (- (get-member World temperatura) ?s.temperatura) 5) then
 				(if (< (get-member World humidade) 85) then
 				(modify ?s (janela ?*true*))
-				(if (neq ?s.ac nil))
+				(if (neq ?s.ac nil)) then
 					(modify ?s (ac ?*false*))
 				)
 			else
 				(if (neq ?s.aquecedor nil) then
-				(modify ?s (aquecedor ?*true*))
-				(modify ?s (janela ?*false*))
-					else
+					(modify ?s (aquecedor ?*true*))
+					(modify ?s (janela ?*false*))
+					(if (neq ?s.ac nil) then
+						(modify ?s (ac ?*false*)))
+				else
 					(modify ?s (janela ?*false*))))
 		else
 			(if (neq ?s.aquecedor nil) then
-				(modify ?s (aquecedor ?*true*)))))
+				(modify ?s (aquecedor ?*true*))
+				(if (neq ?s.ac nil) then
+					(modify ?s (ac ?*false*))))))
 
 
 )
@@ -111,12 +121,16 @@
 	(if (eq (get-member World poupanca) FALSE) then
 		(if (neq ?s.ac nil) then
 			(modify ?s (ac ?*true*))
+			(if (neq ?s.aquecedor nil) then
+				(modify ?s (aquecedor ?*false*)))
 			(if (neq ?s.janela nil) then
 				(modify ?s (janela ?*false*)))
 		else
 			(if (neq ?s.janela nil) then
 				(if (> (- ?s.temperatura (get-member World temperatura)) 5) then
 					(modify ?s (janela ?*true*))
+					(if (neq ?s.aquecedor nil) then
+						(modify ?s (aquecedor ?*false*)))
 				else
 					(modify ?s (janela ?*false*)))))
 	else
@@ -125,6 +139,8 @@
 			(if (> (- ?s.temperatura (get-member World temperatura)) 5) then
 				(if (< (get-member World humidade) 85) then
 					(modify ?s (janela ?*true*))
+					(if (neq ?s.aquecedor nil) then
+						(modify ?s (aquecedor ?*false*)))
 					(if (neq ?s.ac nil) then
 						(modify ?s (ac ?*false*)))
 					)
@@ -132,11 +148,15 @@
 				(if (neq ?s.ac nil) then
 					(modify ?s (janela ?*false*))
 					(modify ?s (ac ?*true*))
+					(if (neq ?s.aquecedor nil) then
+						(modify ?s (aquecedor ?*false*)))
 				else
 					(modify ?s (janela ?*false*))))
 		else
 			(if (neq ?s.ac nil) then
-			(modify ?s (ac ?*true*)))))
+			(modify ?s (ac ?*true*))
+			(if (neq ?s.aquecedor nil) then
+						(modify ?s (aquecedor ?*false*))))))
 )
 	
 	
