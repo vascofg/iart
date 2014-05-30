@@ -54,6 +54,7 @@ public class Sala {
 	private Boolean forno;
 	private Boolean lampada;
 	private Boolean antesLampada;
+	private Boolean antesPersiana;
 
 	public static class Builder {
 		private int tipo;
@@ -190,6 +191,7 @@ public class Sala {
 		this.incendio = false;
 		this.porta = false;
 		this.antesLampada=false;
+		this.antesPersiana=false;
 	}
 
 	public String getNome() {
@@ -336,5 +338,12 @@ public class Sala {
 		this.antesLampada = antesLampada;
 	}
 	
+	public Boolean getAntesPersiana() {
+		return antesPersiana;
+	}
+
+	public void setAntesPersiana(Boolean antesPersiana) {
+		this.antesPersiana = antesPersiana;
+	}
 
 }

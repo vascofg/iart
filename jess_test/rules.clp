@@ -26,28 +26,48 @@
 	?s <- (Sala {temperatura > (+ (get-member World tempIdeal) 1)}) => (arrefeceQuarto ?s)
 )
 
-(defrule escuro
-	?s <- (Sala { luz < 1000}) => (iluminaQuarto ?s)
+
+(defrule sensorMon
+	?s <- (Sala {movimento == ?true} =>(peopleOn ?s)
 )
 
-(defrule claro
-	?s <- (Sala { luz > 8000}) => (escuraQuarto ?s)
+(defrule sensorMon
+	?s <- (Sala {movimento == ?false} =>(peopleOff ?s)
 )
 
-(deffunction iluminaQuarto (?s)
-	(if (neq ?s.persiana) then
-		(modify ?s (persiana ?true)))
-	(if (neq ?s.lampada) then
-		(modify ?s (lampada ?true)))
+(deffunction peopleOn (?s)
+	(if (> (get-member World luzIdeal) 2000) then
+		(if (> (get-member World luminosidade) 1000) then
+			(if (neq ?s.persiana nil) then
+				(modify ?s (persiana ?true))
+			else
+			(if (neq ?s.lampada nil) then
+				(modify ?s (lampada ?true))))
+		else
+			(if (neq ?s.lampada nil) then
+				(modify ?s (lampada ?true)))
+		)
+		else
+			(if (neq ?s.persiana nil) then
+				(modify ?s (persiana ?false)))
+			(if (neq ?s.lampada nil) then
+				(modify ?s (lampada ?false)))
+	)
 )
-
-(deffunction escuraQuarto (?s)
-	(if (neq ?s.persiana) then
-		(modify ?s (persiana ?false)))
-	(if (neq ?s.lampada) then
-		(modify ?s (lampada ?false)))
-)
-
+		
+(deffunction peopleOff (?s)
+	(if (neq ?s.lampada nil) then
+		(if (eq ?s.lampada ?true) then
+			(modify ?s (lampada ?false))
+		else
+		(if (neq ?s.persiana nil) then
+			(if (< (get-member World luminosidade) 1000) then
+				(modify ?s (persiana ?false)))))
+	else
+		(if (neq ?s.persiana nil) then
+			(if (< (get-member World luminosidade) 1000) then
+				(modify ?s (persiana ?false))))))
+				
 (deffunction aqueceQuarto (?s)
 	(if (neq ?s.aquecedor nil) then
 		(if(neq ?s.janela nil) then
