@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
@@ -50,7 +51,15 @@ public class GUI {
 	private static MouseAdapter mouseAdapter = new MouseAdapter() {
 		@Override
 		public void mousePressed(MouseEvent e) {
-			statePanel.loadCell(Integer.parseInt(e.getComponent().getName()));
+			int cell = Integer.parseInt(e.getComponent().getName());
+			if (SwingUtilities.isLeftMouseButton(e))
+				statePanel.loadCell(cell);
+			if (SwingUtilities.isRightMouseButton(e)) {
+				Main.casa.salas[cell].setMovimento(!Main.casa.salas[cell]
+						.getMovimento());
+				if (selectedIndex == cell)
+					statePanel.loadCell(cell); // reload
+			}
 		};
 	};
 
@@ -132,8 +141,6 @@ public class GUI {
 		private JButton emergencia;
 
 		private static Border border = new MatteBorder(1, 0, 0, 0, Color.black);
-
-		// TODO: sliders
 
 		public SettingsPanel() {
 			this.setBorder(border);
