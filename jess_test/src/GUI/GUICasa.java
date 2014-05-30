@@ -134,6 +134,7 @@ public class GUICasa {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					ok.setEnabled(true);
 					Sala s;
 					if (Main.casa.salas[selectedIndex] != null) // edit
 						s = Main.casa.salas[selectedIndex];
@@ -167,6 +168,8 @@ public class GUICasa {
 				public void actionPerformed(ActionEvent e) {
 					if (Main.casa.salas[selectedIndex] != null) {
 						Main.casa.salas[selectedIndex] = null;
+						if(Main.casa.getNumSalas()==0)
+							ok.setEnabled(false);
 						resetAllInputs();
 					}
 				}
@@ -175,6 +178,7 @@ public class GUICasa {
 
 			c.gridwidth = 2;
 			ok = new JButton("OK", null);
+			ok.setEnabled(false);
 			ok.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {

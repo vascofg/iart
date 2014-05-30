@@ -9,6 +9,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -136,8 +138,8 @@ public class GUI {
 		private JLabel humidadeMundo;
 		private JLabel horas;
 		private JSpinner tempIdeal;
-		private JSpinner luzIdeal;
-		private JSpinner humidadeIdeal;
+		private JCheckBox luz;
+		private JCheckBox poupanca;
 		private JButton emergencia;
 
 		private static Border border = new MatteBorder(1, 0, 0, 0, Color.black);
@@ -155,7 +157,17 @@ public class GUI {
 
 			int y = 0;
 
-			c.insets = new Insets(10, 0, 0, 0);
+			c.insets = new Insets(10, 5, 5, 0);
+
+			GUI.addComponent(this, new JLabel("Horas", SwingConstants.CENTER),
+					layout, c, 0, y);
+			GUI.addComponent(this, new JLabel("Temperatura",
+					SwingConstants.CENTER), layout, c, 1, y);
+			GUI.addComponent(this, new JLabel("Luminosidade",
+					SwingConstants.CENTER), layout, c, 2, y);
+			GUI.addComponent(this,
+					new JLabel("Humidade", SwingConstants.CENTER), layout, c,
+					3, y++);
 
 			horas = new JLabel("Horas");
 			horas.setHorizontalAlignment(SwingConstants.CENTER);
@@ -180,7 +192,7 @@ public class GUI {
 
 			c.insets = new Insets(15, 12, 5, 12);
 
-			JLabel tmp = new JLabel("Condições ideais: ");
+			JLabel tmp = new JLabel("<html>Condições<br>ideais:</html>");
 			tmp.setHorizontalAlignment(SwingConstants.CENTER);
 			GUI.addComponent(this, tmp, layout, c, 0, y);
 
@@ -195,30 +207,33 @@ public class GUI {
 				}
 			});
 
-			luzIdeal = new JSpinner(
-					new SpinnerNumberModel(7000, 0, 20000, 1000));
-			World.luzIdeal = 7000;
-			GUI.addComponent(this, luzIdeal, layout, c, 2, y);
-			luzIdeal.addChangeListener(new ChangeListener() {
+			luz = new JCheckBox("Luz");
+			World.luzIdeal = 0;
+			GUI.addComponent(this, luz, layout, c, 2, y);
+			luz.addItemListener(new ItemListener() {
 				@Override
-				public void stateChanged(ChangeEvent arg0) {
-					World.luzIdeal = (int) ((JSpinner) arg0.getSource())
-							.getValue();
+				public void itemStateChanged(ItemEvent e) {
+					if (e.getStateChange() == ItemEvent.SELECTED)
+						World.luzIdeal = 5000;
+					else
+						World.luzIdeal = 0;
 				}
 			});
 
-			humidadeIdeal = new JSpinner(new SpinnerNumberModel(50, 30, 70, 5));
-			World.humidadeIdeal = 50;
-			GUI.addComponent(this, humidadeIdeal, layout, c, 3, y);
-			humidadeIdeal.addChangeListener(new ChangeListener() {
+			poupanca = new JCheckBox("<html>Poupança<br>de energia</html>");
+			World.poupanca = false;
+			GUI.addComponent(this, poupanca, layout, c, 3, y);
+			poupanca.addItemListener(new ItemListener() {
 				@Override
-				public void stateChanged(ChangeEvent arg0) {
-					World.humidadeIdeal = (int) ((JSpinner) arg0.getSource())
-							.getValue();
+				public void itemStateChanged(ItemEvent e) {
+					if (e.getStateChange() == ItemEvent.SELECTED)
+						World.poupanca = true;
+					else
+						World.poupanca = false;
 				}
 			});
 
-			c.gridheight = GridBagConstraints.REMAINDER;
+			c.gridheight = 3;
 			emergencia = new JButton("Simular Emergência", null);
 			emergencia.addActionListener(new ActionListener() {
 				@Override
@@ -279,6 +294,10 @@ public class GUI {
 			luzMundo.setText(String.format("%.1f", Main.mundo.getLuminosidade())
 					+ " lm");
 			humidadeMundo.setText(Main.mundo.getHumidade() + "%");
+			if (Main.mundo.getHumidade() >= 85) // chuva
+				humidadeMundo.setForeground(Color.blue);
+			else
+				humidadeMundo.setForeground(Color.darkGray);
 			int horasVal = Main.mundo.getHoras();
 			horas.setText((horasVal < 10) ? ("0" + horasVal + ":00")
 					: (horasVal + ":00"));
