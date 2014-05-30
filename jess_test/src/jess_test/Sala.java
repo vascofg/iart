@@ -14,8 +14,8 @@ public class Sala {
 	public static final int SALA = 3;
 	public static final int SALAJANTAR = 4;
 
-	public static final String[] TipoText = { "Casa de Banho", "Cozinha", "Quarto",
-			"Sala", "Sala de Jantar" };
+	public static final String[] TipoText = { "Casa de Banho", "Cozinha",
+			"Quarto", "Sala", "Sala de Jantar" };
 
 	public static final BufferedImage[] TipoImgs = new BufferedImage[5];
 
@@ -162,9 +162,10 @@ public class Sala {
 		lampada = builder.lampada;
 	}
 
-	public Sala(String nome, int tipo, float temperatura, int luz, int humidade,
-			Boolean inundacao, Boolean aquecedor, Boolean janela, Boolean ac,
-			Boolean maqCafe, Boolean persiana, Boolean forno, Boolean lampada) {
+	public Sala(String nome, int tipo, float temperatura, int luz,
+			int humidade, Boolean inundacao, Boolean aquecedor, Boolean janela,
+			Boolean ac, Boolean maqCafe, Boolean persiana, Boolean forno,
+			Boolean lampada) {
 		this.nome = nome;
 		this.tipo = tipo;
 		this.temperatura = temperatura;
@@ -189,7 +190,7 @@ public class Sala {
 		this.alarme = false;
 		this.incendio = false;
 		this.porta = false;
-		this.antesLampada=false;
+		this.antesLampada = false;
 	}
 
 	public String getNome() {
@@ -335,6 +336,11 @@ public class Sala {
 	public void setAntesLampada(Boolean antesLampada) {
 		this.antesLampada = antesLampada;
 	}
-	
 
+	public boolean emergencia() {
+		if (Boolean.TRUE.equals(alarme) || Boolean.TRUE.equals(inundacao)
+				|| Boolean.TRUE.equals(incendio))
+			return true;
+		return false;
+	}
 }

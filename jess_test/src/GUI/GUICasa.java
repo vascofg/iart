@@ -7,6 +7,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -37,9 +39,8 @@ public class GUICasa {
 
 	private static class OptionsPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
-		
-		private static Border border = new MatteBorder(0, 1, 0, 0,
-				Color.black);
+
+		private static Border border = new MatteBorder(0, 1, 0, 0, Color.black);
 		private JTextField nome;
 		private JComboBox<String> tipo;
 		private JCheckBox inundacao;
@@ -96,6 +97,15 @@ public class GUICasa {
 
 			janela = new JCheckBox("Janela");
 			janela.setEnabled(false);
+			janela.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent arg0) {
+					if (arg0.getStateChange() == ItemEvent.SELECTED)
+						persiana.setEnabled(true);
+					else
+						persiana.setEnabled(false);
+				}
+			});
 			GUI.addComponent(this, janela, layout, c, 0, 3);
 
 			ac = new JCheckBox("Ar condicionado");
@@ -141,7 +151,8 @@ public class GUICasa {
 					s.setJanela(janela.isSelected() ? false : null);
 					s.setAc(ac.isSelected() ? false : null);
 					s.setMaqCafe(maqCafe.isSelected() ? false : null);
-					s.setPersiana(persiana.isSelected() ? false : null);
+					s.setPersiana((persiana.isSelected() && persiana
+							.isEnabled()) ? false : null);
 					s.setForno(forno.isSelected() ? false : null);
 					s.setLampada(lampada.isSelected() ? false : null);
 					apagar.setEnabled(true);
@@ -182,7 +193,6 @@ public class GUICasa {
 			janela.setEnabled(true);
 			ac.setEnabled(true);
 			maqCafe.setEnabled(true);
-			persiana.setEnabled(true);
 			forno.setEnabled(true);
 			lampada.setEnabled(true);
 			guardar.setEnabled(true);
@@ -197,6 +207,7 @@ public class GUICasa {
 			ac.setSelected(false);
 			maqCafe.setSelected(false);
 			persiana.setSelected(false);
+			persiana.setEnabled(false);
 			forno.setSelected(false);
 			lampada.setSelected(false);
 			apagar.setEnabled(false);

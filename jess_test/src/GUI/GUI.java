@@ -7,11 +7,15 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -20,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
@@ -37,6 +42,7 @@ public class GUI {
 	private static SettingsPanel settingsPanel;
 	static CellPanel[] components = new CellPanel[9];
 	private static Border selectedBorder = new LineBorder(Color.RED);
+	private static final int BLINKING_RATE = 500; // alarm blink rate
 
 	private static Dimension cellDimension = new Dimension(150, 150);
 	private static int selectedIndex = -1;
@@ -91,6 +97,9 @@ public class GUI {
 		frame.pack();
 		frame.setLocationRelativeTo(null); // center window
 		frame.setVisible(true);
+		Timer timer = new Timer(BLINKING_RATE, new TimerListener(components));
+		timer.setInitialDelay(0);
+		timer.start();
 	}
 
 	static void addComponent(Container container, JComponent component,
@@ -120,6 +129,7 @@ public class GUI {
 		private JSpinner tempIdeal;
 		private JSpinner luzIdeal;
 		private JSpinner humidadeIdeal;
+		private JButton emergencia;
 
 		private static Border border = new MatteBorder(1, 0, 0, 0, Color.black);
 
@@ -196,10 +206,63 @@ public class GUI {
 			humidadeIdeal.addChangeListener(new ChangeListener() {
 				@Override
 				public void stateChanged(ChangeEvent arg0) {
-					World.humidadeIdeal = (int) ((JSpinner) arg0
-							.getSource()).getValue();
+					World.humidadeIdeal = (int) ((JSpinner) arg0.getSource())
+							.getValue();
 				}
 			});
+
+			c.gridheight = GridBagConstraints.REMAINDER;
+			emergencia = new JButton("Simular Emergência", null);
+			emergencia.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					ArrayList<Sala> temp = new ArrayList<>();
+					for (int i = 0; i < Main.casa.salas.length; i++)
+						if (Main.casa.salas[i] != null)
+							temp.add(Main.casa.salas[i]);
+					Sala s = temp.get((int) (Math.random() * temp.size()));
+					new Thread(new SimuladorEmergencia(s)).start();
+				}
+			});
+			GUI.addComponent(this, emergencia, layout, c, 4, 0);
+		}
+
+		private class SimuladorEmergencia implements Runnable {
+			private Sala s;
+
+			public SimuladorEmergencia(Sala s) {
+				this.s = s;
+			}
+
+			@Override
+			public void run() {
+				int emergencia;
+				if (s.getInundacao() != null)
+					emergencia = (int) (Math.random() * 3);
+				else
+					emergencia = (int) (Math.random() * 2);
+				try {
+					switch (emergencia) {
+					case 0:
+						s.setAlarme(true);
+						Thread.sleep(10000);
+						s.setAlarme(false);
+						break;
+					case 1:
+						s.setIncendio(true);
+						Thread.sleep(10000);
+						s.setIncendio(false);
+						break;
+					case 2:
+						s.setInundacao(true);
+						Thread.sleep(10000);
+						s.setInundacao(false);
+						break;
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		public void updateWorld() {
@@ -258,7 +321,7 @@ public class GUI {
 			luz.setFont(luz.getFont().deriveFont(16.0f));
 			GUI.addComponent(this, luz, layout, c, 1, y++);
 
-			movimento = new Semaphore("Sensor movimento");
+			movimento = new Semaphore("Movimento");
 			movimento.setEnabled(false);
 			GUI.addComponent(this, movimento, layout, c, 0, y);
 
@@ -266,11 +329,11 @@ public class GUI {
 			alarme.setEnabled(false);
 			GUI.addComponent(this, alarme, layout, c, 1, y++);
 
-			incendio = new Semaphore("Sensor incêndio");
+			incendio = new Semaphore("Incêndio");
 			incendio.setEnabled(false);
 			GUI.addComponent(this, incendio, layout, c, 0, y);
 
-			inundacao = new Semaphore("Sensor inundação");
+			inundacao = new Semaphore("Inundação");
 			inundacao.setEnabled(false);
 			GUI.addComponent(this, inundacao, layout, c, 1, y++);
 
@@ -314,7 +377,8 @@ public class GUI {
 				}
 				components[index].setBorder(selectedBorder);
 				Sala s = Main.casa.salas[index];
-				temperatura.setText(String.format("%.1f", s.getTemperatura()) + " ºC");
+				temperatura.setText(String.format("%.1f", s.getTemperatura())
+						+ " ºC");
 				luz.setText(s.getLuz() + " lm");
 
 				if (s.getMovimento() == null)
@@ -431,6 +495,28 @@ public class GUI {
 			}
 
 			protected void processMouseEvent(MouseEvent e) {
+			}
+		}
+	}
+
+	private static class TimerListener implements ActionListener {
+		private CellPanel[] cells;
+
+		public TimerListener(CellPanel[] cells) {
+			this.cells = cells;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			for (int i = 0; i < Main.casa.salas.length; i++) {
+				Sala s = Main.casa.salas[i];
+				if (s != null && s.emergencia()) {
+					if (cells[i].getBorder() == null)
+						cells[i].setBorder(selectedBorder);
+					else
+						cells[i].setBorder(null);
+				}
+
 			}
 		}
 	}
