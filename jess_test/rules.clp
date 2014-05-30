@@ -28,11 +28,11 @@
 
 
 (defrule sensorMon
-	?s <- (Sala {movimento == ?true} =>(peopleOn ?s)
+	?s <- (Sala {movimento == 1}) =>(peopleOn ?s)
 )
 
-(defrule sensorMon
-	?s <- (Sala {movimento == ?false} =>(peopleOff ?s)
+(defrule sensorMoff
+	?s <- (Sala {movimento == 0}) =>(peopleOff ?s)
 )
 
 (deffunction peopleOn (?s)
