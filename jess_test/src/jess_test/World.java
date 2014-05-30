@@ -9,9 +9,12 @@ public class World {
 	static public boolean poupanca;
 	private int humidade;
 	private int horas;
+	static public boolean forno = false, maqCafe = false;
+	static public int horaForno;
+	static public int horaMaqCafe;
 	public int[] hum = { 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 };
 	int arrN;
-	
+
 	public static Integer getTempIdeal() {
 		return tempIdeal;
 	}

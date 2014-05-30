@@ -15,6 +15,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +26,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -137,10 +141,8 @@ public class GUI {
 		private JLabel luzMundo;
 		private JLabel humidadeMundo;
 		private JLabel horas;
-		private JSpinner tempIdeal;
-		private JCheckBox luz;
-		private JCheckBox poupanca;
-		private JButton emergencia;
+		private JSpinner forno;
+		private JSpinner maqCafe;
 
 		private static Border border = new MatteBorder(1, 0, 0, 0, Color.black);
 
@@ -196,7 +198,10 @@ public class GUI {
 			tmp.setHorizontalAlignment(SwingConstants.CENTER);
 			GUI.addComponent(this, tmp, layout, c, 0, y);
 
-			tempIdeal = new JSpinner(new SpinnerNumberModel(24, 16, 32, 1));
+			JSpinner tempIdeal = new JSpinner(new SpinnerNumberModel(24, 16,
+					32, 1));
+			((JSpinner.DefaultEditor) tempIdeal.getEditor()).getTextField()
+					.setEditable(false);
 			World.tempIdeal = 24;
 			GUI.addComponent(this, tempIdeal, layout, c, 1, y);
 			tempIdeal.addChangeListener(new ChangeListener() {
@@ -207,7 +212,7 @@ public class GUI {
 				}
 			});
 
-			luz = new JCheckBox("Luz");
+			JCheckBox luz = new JCheckBox("Luz");
 			World.luzIdeal = 0;
 			GUI.addComponent(this, luz, layout, c, 2, y);
 			luz.addItemListener(new ItemListener() {
@@ -220,9 +225,10 @@ public class GUI {
 				}
 			});
 
-			poupanca = new JCheckBox("<html>Poupança<br>de energia</html>");
+			JCheckBox poupanca = new JCheckBox(
+					"<html>Poupança<br>de energia</html>");
 			World.poupanca = false;
-			GUI.addComponent(this, poupanca, layout, c, 3, y);
+			GUI.addComponent(this, poupanca, layout, c, 3, y++);
 			poupanca.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
@@ -233,8 +239,78 @@ public class GUI {
 				}
 			});
 
+			GUI.addComponent(this, new JLabel("Forno", SwingConstants.CENTER),
+					layout, c, 0, y);
+			SpinnerModel sdm = new SpinnerDateModel(new Date(0), null, null,
+					Calendar.HOUR_OF_DAY);
+			forno = new JSpinner(sdm);
+			forno.setEnabled(false);
+			JSpinner.DateEditor de = new JSpinner.DateEditor(forno, "HH:mm");
+			forno.setEditor(de);
+			de.getTextField().setEditable(false);
+			JCheckBox fornoOn = new JCheckBox();
+			JPanel temp = new JPanel();
+			temp.add(forno);
+			temp.add(fornoOn);
+			fornoOn.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent arg0) {
+					if (arg0.getStateChange() == ItemEvent.SELECTED) {
+						World.forno = true;
+						forno.setEnabled(true);
+					} else {
+						World.forno = false;
+						forno.setEnabled(false);
+					}
+				}
+			});
+			World.horaForno = 1;
+			GUI.addComponent(this, temp, layout, c, 1, y);
+			forno.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent arg0) {
+					World.horaForno = ((Date) ((JSpinner) arg0.getSource())
+							.getValue()).getHours();
+				}
+			});
+
+			GUI.addComponent(this, new JLabel("Maq. Café",
+					SwingConstants.CENTER), layout, c, 2, y);
+			sdm = new SpinnerDateModel(new Date(0), null, null,
+					Calendar.HOUR_OF_DAY);
+			maqCafe = new JSpinner(sdm);
+			maqCafe.setEnabled(false);
+			de = new JSpinner.DateEditor(maqCafe, "HH:mm");
+			maqCafe.setEditor(de);
+			de.getTextField().setEditable(false);
+			JCheckBox maqCafeOn = new JCheckBox();
+			temp = new JPanel();
+			temp.add(maqCafe);
+			temp.add(maqCafeOn);
+			maqCafeOn.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent arg0) {
+					if (arg0.getStateChange() == ItemEvent.SELECTED) {
+						World.maqCafe = true;
+						maqCafe.setEnabled(true);
+					} else {
+						World.maqCafe = false;
+						maqCafe.setEnabled(false);
+					}
+				}
+			});
+			World.horaMaqCafe = 1;
+			GUI.addComponent(this, temp, layout, c, 3, y);
+			maqCafe.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent arg0) {
+					World.horaMaqCafe = ((Date) ((JSpinner) arg0.getSource())
+							.getValue()).getHours();
+				}
+			});
+
 			c.gridheight = 3;
-			emergencia = new JButton("Simular Emergência", null);
+			JButton emergencia = new JButton("Simular Emergência", null);
 			emergencia.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
