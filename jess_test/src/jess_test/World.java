@@ -88,7 +88,7 @@ public class World {
 		Random rand = new Random();
 		double lumen;
 		lumen = Math.sin(hours / (24 / Math.PI))
-				* (7500 + rand.nextInt(1000) - 500);
+				* (4500 + rand.nextInt(1000) - 200);
 		if (lumen < 0)
 			lumen = 0;
 		return lumen;

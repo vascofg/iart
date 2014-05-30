@@ -317,12 +317,10 @@ public class GUI {
 				temperatura.setText(String.format("%.1f", s.getTemperatura()) + " ºC");
 				luz.setText(s.getLuz() + " lm");
 
-				if (s.getMovimento() == null)
-					movimento.setEnabled(false);
-				else {
+				
 					movimento.setEnabled(true);
 					movimento.setSelected(s.getMovimento());
-				}
+				
 
 				if (s.getAlarme() == null)
 					alarme.setEnabled(false);

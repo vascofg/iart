@@ -55,35 +55,61 @@ public class Environment extends Thread {
 						}
 
 						if (Boolean.TRUE.equals(s.getPersiana())) {
-							
-							s.setLuz((int) (0.6 * Main.mundo
-									.getLuminosidade()));
-						
-					}
+							if (Boolean.TRUE.equals(s.getLampada())) {
+								if (s.getAntesLampada() != s.getLampada()) {
+									s.setAntesLampada(true);
+									s.setLuz((int) (0.6 * Main.mundo
+											.getLuminosidade() + 1200));
+								}
+							} else {
+								if (Boolean.FALSE.equals(s.getLampada())) {
+									if (s.getAntesLampada() != s.getLampada()) {
+										s.setAntesLampada(false);
+										s.setLuz((int) (0.6 * Main.mundo
+												.getLuminosidade()));
+										if (s.getLuz() < 0)
+											s.setLuz(0);
+									}
 
-					if (Boolean.FALSE.equals(s.getPersiana())) {
-						
-							s.setLuz((int) (0.1 * Main.mundo
-									.getLuminosidade()));
-						
-					}
-					
+								}
+							}
+						}
+
+						if (Boolean.FALSE.equals(s.getPersiana())) {
+							if (Boolean.TRUE.equals(s.getLampada())) {
+								if (s.getAntesLampada() != s.getLampada()) {
+									s.setAntesLampada(true);
+									s.setLuz((int) (0.1 * Main.mundo
+											.getLuminosidade() + 1200));
+								}
+							} else {
+								if (Boolean.FALSE.equals(s.getLampada())) {
+									if (s.getAntesLampada()!= s.getLampada()) {
+										s.setAntesLampada(false);
+										s.setLuz((int) (0.1 * Main.mundo
+												.getLuminosidade()));
+										if (s.getLuz() < 0)
+											s.setLuz(0);
+									}
+								}
+
+							}
+						}
+
 						if (Boolean.TRUE.equals(s.getLampada())) {
 							if (s.getAntesLampada() ^ s.getLampada()) {
 								s.setAntesLampada(true);
-								s.setLuz(s.getLuz() + 800);
+								s.setLuz(s.getLuz() + 1200);
 							}
 						}
 						if (Boolean.FALSE.equals(s.getLampada())) {
 							if (s.getAntesLampada() ^ s.getLampada()) {
 								s.setAntesLampada(false);
-								s.setLuz(s.getLuz() - 800);
-								if(s.getLuz()<0)
+								s.setLuz(s.getLuz() - 1200);
+								if (s.getLuz() < 0)
 									s.setLuz(0);
 							}
 						}
-
-						
 
 						Main.r.updateObject(s);
 					}

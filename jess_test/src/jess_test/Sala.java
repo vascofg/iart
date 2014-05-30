@@ -38,7 +38,7 @@ public class Sala {
 	public float temperatura;
 	public int luz;
 	private int humidade;
-	private Boolean movimento;
+	public boolean movimento;
 	private Boolean alarme;
 	private Boolean inundacao;
 	private Boolean incendio;
@@ -63,7 +63,7 @@ public class Sala {
 		private float temperatura = 0;
 		private int luz = 0;
 		private int humidade = 0;
-		private Boolean movimento = false;
+		private Boolean movimento;
 		private Boolean alarme = false;
 		private Boolean inundacao = null;
 		private Boolean incendio = false;
@@ -234,11 +234,11 @@ public class Sala {
 		this.humidade = humidade;
 	}
 
-	public Boolean getMovimento() {
+	public boolean getMovimento() {
 		return movimento;
 	}
 
-	public void setMovimento(Boolean movimento) {
+	public void setMovimento(boolean movimento) {
 		this.movimento = movimento;
 	}
 
