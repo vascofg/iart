@@ -72,9 +72,9 @@
 				(modify ?s (persiana ?*false*))))))
 				
 (deffunction aqueceQuarto (?s)
-	(if (neq (get-member World poupanca) ?*true*)
+	(if (neq (get-member World poupanca) ?*true*) then
 		(if (neq ?s.aquecedor nil) then
-			(if(neq ?s.janela nil) then
+			(if (neq ?s.janela nil) then
 				(modify ?s (janela ?*false*))
 				(modify ?s (aquecedor ?*true*))
 			else
@@ -83,9 +83,9 @@
 			(if (neq ?s.janela nil) then
 				 (if (> (- (get-member World temperatura) ?s.temperatura) 5) then
 				 	(if (< (get-member World humidade) 85) then
-					(modify ?s (janela ?*true*))
+					(modify ?s (janela ?*true*)))
 				else	
-					(modify ?s (janela ?*false*))))))
+					(modify ?s (janela ?*false*)))))
 	else
 		(if(neq ?s.janela nil) then
 			(if (> (- (get-member World temperatura) ?s.temperatura) 5) then
@@ -93,23 +93,44 @@
 				(modify ?s (janela ?*true*)))
 			else
 				(if (neq ?s.aquecedor nil) then
-				(modify ?s (aquecedor ?*true*))))))
+				(modify ?s (aquecedor ?*true*))
+				(modify ?s (janela ?*false*))
+					else
+					(modify ?s (janela ?*false*))))
+		else
+			(if (neq ?s.aquecedor nil) then
+				(modify ?s (aquecedor ?*true*)))))
 
 
 )
-
 (deffunction arrefeceQuarto (?s)
-	(if (neq ?s.ac nil) then
-		(modify ?s (ac ?*true*))
-		(if (neq ?s.janela nil) then
-			(modify ?s (janela ?*false*)))
+	(if (eq (get-member World poupanca) FALSE) then
+		(if (neq ?s.ac nil) then
+			(modify ?s (ac ?*true*))
+			(if (neq ?s.janela nil) then
+				(modify ?s (janela ?*false*)))
+		else
+			(if (neq ?s.janela nil) then
+				(if (> (- ?s.temperatura (get-member World temperatura)) 5) then
+					(modify ?s (janela ?*true*))
+				else
+					(modify ?s (janela ?*false*)))))
 	else
+	
 		(if (neq ?s.janela nil) then
 			(if (> (- ?s.temperatura (get-member World temperatura)) 5) then
-				(modify ?s (janela ?*true*))
+				(if (< (get-member World humidade) 85) then
+					(modify ?s (janela ?*true*)))
 			else
-				(modify ?s (janela ?*false*))))))
-	
+				(if (neq ?s.ac nil) then
+					(modify ?s (janela ?*false*))
+					(modify ?s (ac ?*true*))
+				else
+					(modify ?s (janela ?*false*))))
+		else
+			(if (neq ?s.ac nil) then
+			(modify ?s (ac ?*true*)))))
+		)
 	
 	
 

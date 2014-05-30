@@ -208,7 +208,7 @@ public class GUI {
 			});
 
 			luz = new JCheckBox("Luz");
-			World.luzIdeal = 0;
+			World.luzIdeal = 1000;
 			GUI.addComponent(this, luz, layout, c, 2, y);
 			luz.addItemListener(new ItemListener() {
 				@Override
@@ -216,7 +216,7 @@ public class GUI {
 					if (e.getStateChange() == ItemEvent.SELECTED)
 						World.luzIdeal = 5000;
 					else
-						World.luzIdeal = 0;
+						World.luzIdeal = 1000;
 				}
 			});
 
@@ -230,6 +230,8 @@ public class GUI {
 						World.poupanca = true;
 					else
 						World.poupanca = false;
+						
+					
 				}
 			});
 

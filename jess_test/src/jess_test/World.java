@@ -7,7 +7,7 @@ public class World {
 	static public double temperatura;
 	static public double luminosidade;
 	static public boolean poupanca;
-	private int humidade;
+	static public int humidade;
 	private int horas;
 	public int[] hum = { 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 };
 	int arrN;
@@ -61,6 +61,8 @@ public class World {
 		setLuminosidade(0);
 		setHumidade(5);
 		setHoras(0);
+		setPoupanca(false);
+		
 	}
 
 	public void iteration() {
@@ -102,4 +104,14 @@ public class World {
 		int n = rand.nextInt(11) - 5;
 		return hum[c] + n;
 	}
+
+	public static boolean isPoupanca() {
+		return poupanca;
+	}
+
+	public static void setPoupanca(boolean poupanca) {
+		World.poupanca = poupanca;
+	}
+	
+	
 }
