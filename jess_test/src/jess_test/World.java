@@ -5,10 +5,10 @@ import java.util.Random;
 public class World {
 	static public int tempIdeal, luzIdeal, humidadeIdeal;
 	static public double temperatura;
-	private double Luminosidade;
+	static public double luminosidade;
 	private int humidade;
 	private int horas;
-	public int[] hum = { 50, 55, 60, 65, 70, 75, 80, 85, 90, 100 };
+	public int[] hum = { 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 };
 	int arrN;
 	
 	public static Integer getTempIdeal() {
@@ -32,11 +32,11 @@ public class World {
 	}
 
 	public double getLuminosidade() {
-		return Luminosidade;
+		return luminosidade;
 	}
 
 	public void setLuminosidade(double luminosidade) {
-		Luminosidade = luminosidade;
+		this.luminosidade = luminosidade;
 	}
 
 	public int getHumidade() {
