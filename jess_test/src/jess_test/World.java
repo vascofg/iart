@@ -6,6 +6,7 @@ public class World {
 	static public int tempIdeal, luzIdeal, humidadeIdeal;
 	static public double temperatura;
 	static public double luminosidade;
+	static public boolean poupanca;
 	private int humidade;
 	private int horas;
 	public int[] hum = { 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 };

@@ -7,11 +7,17 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -20,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
@@ -37,6 +45,7 @@ public class GUI {
 	private static SettingsPanel settingsPanel;
 	static CellPanel[] components = new CellPanel[9];
 	private static Border selectedBorder = new LineBorder(Color.RED);
+	private static final int BLINKING_RATE = 500; // alarm blink rate
 
 	private static Dimension cellDimension = new Dimension(150, 150);
 	private static int selectedIndex = -1;
@@ -44,7 +53,15 @@ public class GUI {
 	private static MouseAdapter mouseAdapter = new MouseAdapter() {
 		@Override
 		public void mousePressed(MouseEvent e) {
-			statePanel.loadCell(Integer.parseInt(e.getComponent().getName()));
+			int cell = Integer.parseInt(e.getComponent().getName());
+			if (SwingUtilities.isLeftMouseButton(e))
+				statePanel.loadCell(cell);
+			if (SwingUtilities.isRightMouseButton(e)) {
+				Main.casa.salas[cell].setMovimento(!Main.casa.salas[cell]
+						.getMovimento());
+				if (selectedIndex == cell)
+					statePanel.loadCell(cell); // reload
+			}
 		};
 	};
 
@@ -91,6 +108,9 @@ public class GUI {
 		frame.pack();
 		frame.setLocationRelativeTo(null); // center window
 		frame.setVisible(true);
+		Timer timer = new Timer(BLINKING_RATE, new TimerListener(components));
+		timer.setInitialDelay(0);
+		timer.start();
 	}
 
 	static void addComponent(Container container, JComponent component,
@@ -118,12 +138,11 @@ public class GUI {
 		private JLabel humidadeMundo;
 		private JLabel horas;
 		private JSpinner tempIdeal;
-		private JSpinner luzIdeal;
-		private JSpinner humidadeIdeal;
+		private JCheckBox luz;
+		private JCheckBox poupanca;
+		private JButton emergencia;
 
 		private static Border border = new MatteBorder(1, 0, 0, 0, Color.black);
-
-		// TODO: sliders
 
 		public SettingsPanel() {
 			this.setBorder(border);
@@ -138,7 +157,17 @@ public class GUI {
 
 			int y = 0;
 
-			c.insets = new Insets(10, 0, 0, 0);
+			c.insets = new Insets(10, 5, 5, 0);
+
+			GUI.addComponent(this, new JLabel("Horas", SwingConstants.CENTER),
+					layout, c, 0, y);
+			GUI.addComponent(this, new JLabel("Temperatura",
+					SwingConstants.CENTER), layout, c, 1, y);
+			GUI.addComponent(this, new JLabel("Luminosidade",
+					SwingConstants.CENTER), layout, c, 2, y);
+			GUI.addComponent(this,
+					new JLabel("Humidade", SwingConstants.CENTER), layout, c,
+					3, y++);
 
 			horas = new JLabel("Horas");
 			horas.setHorizontalAlignment(SwingConstants.CENTER);
@@ -163,7 +192,7 @@ public class GUI {
 
 			c.insets = new Insets(15, 12, 5, 12);
 
-			JLabel tmp = new JLabel("Condições ideais: ");
+			JLabel tmp = new JLabel("<html>Condições<br>ideais:</html>");
 			tmp.setHorizontalAlignment(SwingConstants.CENTER);
 			GUI.addComponent(this, tmp, layout, c, 0, y);
 
@@ -178,28 +207,84 @@ public class GUI {
 				}
 			});
 
-			luzIdeal = new JSpinner(
-					new SpinnerNumberModel(7000, 0, 20000, 1000));
-			World.luzIdeal = 7000;
-			GUI.addComponent(this, luzIdeal, layout, c, 2, y);
-			luzIdeal.addChangeListener(new ChangeListener() {
+			luz = new JCheckBox("Luz");
+			World.luzIdeal = 0;
+			GUI.addComponent(this, luz, layout, c, 2, y);
+			luz.addItemListener(new ItemListener() {
 				@Override
-				public void stateChanged(ChangeEvent arg0) {
-					World.luzIdeal = (int) ((JSpinner) arg0.getSource())
-							.getValue();
+				public void itemStateChanged(ItemEvent e) {
+					if (e.getStateChange() == ItemEvent.SELECTED)
+						World.luzIdeal = 5000;
+					else
+						World.luzIdeal = 0;
 				}
 			});
 
-			humidadeIdeal = new JSpinner(new SpinnerNumberModel(50, 30, 70, 5));
-			World.humidadeIdeal = 50;
-			GUI.addComponent(this, humidadeIdeal, layout, c, 3, y);
-			humidadeIdeal.addChangeListener(new ChangeListener() {
+			poupanca = new JCheckBox("<html>Poupança<br>de energia</html>");
+			World.poupanca = false;
+			GUI.addComponent(this, poupanca, layout, c, 3, y);
+			poupanca.addItemListener(new ItemListener() {
 				@Override
-				public void stateChanged(ChangeEvent arg0) {
-					World.humidadeIdeal = (int) ((JSpinner) arg0
-							.getSource()).getValue();
+				public void itemStateChanged(ItemEvent e) {
+					if (e.getStateChange() == ItemEvent.SELECTED)
+						World.poupanca = true;
+					else
+						World.poupanca = false;
 				}
 			});
+
+			c.gridheight = 3;
+			emergencia = new JButton("Simular Emergência", null);
+			emergencia.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					ArrayList<Sala> temp = new ArrayList<>();
+					for (int i = 0; i < Main.casa.salas.length; i++)
+						if (Main.casa.salas[i] != null)
+							temp.add(Main.casa.salas[i]);
+					Sala s = temp.get((int) (Math.random() * temp.size()));
+					new Thread(new SimuladorEmergencia(s)).start();
+				}
+			});
+			GUI.addComponent(this, emergencia, layout, c, 4, 0);
+		}
+
+		private class SimuladorEmergencia implements Runnable {
+			private Sala s;
+
+			public SimuladorEmergencia(Sala s) {
+				this.s = s;
+			}
+
+			@Override
+			public void run() {
+				int emergencia;
+				if (s.getInundacao() != null)
+					emergencia = (int) (Math.random() * 3);
+				else
+					emergencia = (int) (Math.random() * 2);
+				try {
+					switch (emergencia) {
+					case 0:
+						s.setAlarme(true);
+						Thread.sleep(10000);
+						s.setAlarme(false);
+						break;
+					case 1:
+						s.setIncendio(true);
+						Thread.sleep(10000);
+						s.setIncendio(false);
+						break;
+					case 2:
+						s.setInundacao(true);
+						Thread.sleep(10000);
+						s.setInundacao(false);
+						break;
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		public void updateWorld() {
@@ -209,6 +294,10 @@ public class GUI {
 			luzMundo.setText(String.format("%.1f", Main.mundo.getLuminosidade())
 					+ " lm");
 			humidadeMundo.setText(Main.mundo.getHumidade() + "%");
+			if (Main.mundo.getHumidade() >= 85) // chuva
+				humidadeMundo.setForeground(Color.blue);
+			else
+				humidadeMundo.setForeground(Color.darkGray);
 			int horasVal = Main.mundo.getHoras();
 			horas.setText((horasVal < 10) ? ("0" + horasVal + ":00")
 					: (horasVal + ":00"));
@@ -258,7 +347,7 @@ public class GUI {
 			luz.setFont(luz.getFont().deriveFont(16.0f));
 			GUI.addComponent(this, luz, layout, c, 1, y++);
 
-			movimento = new Semaphore("Sensor movimento");
+			movimento = new Semaphore("Movimento");
 			movimento.setEnabled(false);
 			GUI.addComponent(this, movimento, layout, c, 0, y);
 
@@ -266,11 +355,11 @@ public class GUI {
 			alarme.setEnabled(false);
 			GUI.addComponent(this, alarme, layout, c, 1, y++);
 
-			incendio = new Semaphore("Sensor incêndio");
+			incendio = new Semaphore("Incêndio");
 			incendio.setEnabled(false);
 			GUI.addComponent(this, incendio, layout, c, 0, y);
 
-			inundacao = new Semaphore("Sensor inundação");
+			inundacao = new Semaphore("Inundação");
 			inundacao.setEnabled(false);
 			GUI.addComponent(this, inundacao, layout, c, 1, y++);
 
@@ -314,7 +403,8 @@ public class GUI {
 				}
 				components[index].setBorder(selectedBorder);
 				Sala s = Main.casa.salas[index];
-				temperatura.setText(String.format("%.1f", s.getTemperatura()) + " ºC");
+				temperatura.setText(String.format("%.1f", s.getTemperatura())
+						+ " ºC");
 				luz.setText(s.getLuz() + " lm");
 
 				
@@ -429,6 +519,28 @@ public class GUI {
 			}
 
 			protected void processMouseEvent(MouseEvent e) {
+			}
+		}
+	}
+
+	private static class TimerListener implements ActionListener {
+		private CellPanel[] cells;
+
+		public TimerListener(CellPanel[] cells) {
+			this.cells = cells;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			for (int i = 0; i < Main.casa.salas.length; i++) {
+				Sala s = Main.casa.salas[i];
+				if (s != null && s.emergencia()) {
+					if (cells[i].getBorder() == null)
+						cells[i].setBorder(selectedBorder);
+					else
+						cells[i].setBorder(null);
+				}
+
 			}
 		}
 	}

@@ -14,8 +14,8 @@ public class Sala {
 	public static final int SALA = 3;
 	public static final int SALAJANTAR = 4;
 
-	public static final String[] TipoText = { "Casa de Banho", "Cozinha", "Quarto",
-			"Sala", "Sala de Jantar" };
+	public static final String[] TipoText = { "Casa de Banho", "Cozinha",
+			"Quarto", "Sala", "Sala de Jantar" };
 
 	public static final BufferedImage[] TipoImgs = new BufferedImage[5];
 
@@ -37,7 +37,6 @@ public class Sala {
 	/* sensores */
 	public float temperatura;
 	public int luz;
-	private int humidade;
 	public boolean movimento;
 	private Boolean alarme;
 	private Boolean inundacao;
@@ -62,8 +61,7 @@ public class Sala {
 		private String nome = "";
 		private float temperatura = 0;
 		private int luz = 0;
-		private int humidade = 0;
-		private Boolean movimento;
+		private boolean movimento = false;
 		private Boolean alarme = false;
 		private Boolean inundacao = null;
 		private Boolean incendio = false;
@@ -92,11 +90,6 @@ public class Sala {
 
 		public Builder luz(int val) {
 			luz = val;
-			return this;
-		}
-
-		public Builder humidade(int val) {
-			humidade = val;
 			return this;
 		}
 
@@ -148,7 +141,6 @@ public class Sala {
 		tipo = builder.tipo;
 		temperatura = builder.temperatura;
 		luz = builder.luz;
-		humidade = builder.humidade;
 		movimento = builder.movimento;
 		alarme = builder.alarme;
 		inundacao = builder.inundacao;
@@ -163,14 +155,13 @@ public class Sala {
 		lampada = builder.lampada;
 	}
 
-	public Sala(String nome, int tipo, float temperatura, int luz, int humidade,
+	public Sala(String nome, int tipo, float temperatura, int luz,
 			Boolean inundacao, Boolean aquecedor, Boolean janela, Boolean ac,
 			Boolean maqCafe, Boolean persiana, Boolean forno, Boolean lampada) {
 		this.nome = nome;
 		this.tipo = tipo;
 		this.temperatura = temperatura;
 		this.luz = luz;
-		this.humidade = humidade;
 		this.inundacao = inundacao;
 		this.aquecedor = aquecedor;
 		this.janela = janela;
@@ -185,13 +176,12 @@ public class Sala {
 		this.tipo = tipo;
 		this.temperatura = 0;
 		this.luz = 0;
-		this.humidade = 0;
 		this.movimento = false;
 		this.alarme = false;
 		this.incendio = false;
 		this.porta = false;
-		this.antesLampada=false;
-		this.antesPersiana=false;
+		this.antesLampada = false;
+		this.antesPersiana = false;
 	}
 
 	public String getNome() {
@@ -224,14 +214,6 @@ public class Sala {
 
 	public void setLuz(int luz) {
 		this.luz = luz;
-	}
-
-	public int getHumidade() {
-		return humidade;
-	}
-
-	public void setHumidade(int humidade) {
-		this.humidade = humidade;
 	}
 
 	public boolean getMovimento() {
@@ -337,7 +319,7 @@ public class Sala {
 	public void setAntesLampada(Boolean antesLampada) {
 		this.antesLampada = antesLampada;
 	}
-	
+
 	public Boolean getAntesPersiana() {
 		return antesPersiana;
 	}
@@ -346,4 +328,10 @@ public class Sala {
 		this.antesPersiana = antesPersiana;
 	}
 
+	public boolean emergencia() {
+		if (Boolean.TRUE.equals(alarme) || Boolean.TRUE.equals(inundacao)
+				|| Boolean.TRUE.equals(incendio))
+			return true;
+		return false;
+	}
 }
