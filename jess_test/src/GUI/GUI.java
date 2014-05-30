@@ -221,7 +221,7 @@ public class GUI {
 					if (e.getStateChange() == ItemEvent.SELECTED)
 						World.luzIdeal = 5000;
 					else
-						World.luzIdeal = 0;
+						World.luzIdeal = 1000;
 				}
 			});
 
@@ -236,6 +236,8 @@ public class GUI {
 						World.poupanca = true;
 					else
 						World.poupanca = false;
+						
+					
 				}
 			});
 
@@ -483,12 +485,10 @@ public class GUI {
 						+ " ºC");
 				luz.setText(s.getLuz() + " lm");
 
-				if (s.getMovimento() == null)
-					movimento.setEnabled(false);
-				else {
+				
 					movimento.setEnabled(true);
 					movimento.setSelected(s.getMovimento());
-				}
+				
 
 				if (s.getAlarme() == null)
 					alarme.setEnabled(false);

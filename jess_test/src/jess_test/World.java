@@ -7,7 +7,7 @@ public class World {
 	static public double temperatura;
 	static public double luminosidade;
 	static public boolean poupanca;
-	private int humidade;
+	static public int humidade;
 	private int horas;
 	static public boolean forno = false, maqCafe = false;
 	static public int horaForno;
@@ -64,6 +64,8 @@ public class World {
 		setLuminosidade(0);
 		setHumidade(5);
 		setHoras(0);
+		setPoupanca(false);
+		
 	}
 
 	public void iteration() {
@@ -92,7 +94,7 @@ public class World {
 		Random rand = new Random();
 		double lumen;
 		lumen = Math.sin(hours / (24 / Math.PI))
-				* (7500 + rand.nextInt(1000) - 500);
+				* (4500 + rand.nextInt(1000) - 200);
 		if (lumen < 0)
 			lumen = 0;
 		return lumen;
@@ -105,4 +107,14 @@ public class World {
 		int n = rand.nextInt(11) - 5;
 		return hum[c] + n;
 	}
+
+	public static boolean isPoupanca() {
+		return poupanca;
+	}
+
+	public static void setPoupanca(boolean poupanca) {
+		World.poupanca = poupanca;
+	}
+	
+	
 }

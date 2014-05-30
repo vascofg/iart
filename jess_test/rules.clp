@@ -7,8 +7,8 @@
 
 (reset)
 
-(bind ?true (new java.lang.Boolean TRUE)) /*because jess*/
-(bind ?false (new java.lang.Boolean FALSE))
+(defglobal ?*true* = (new java.lang.Boolean TRUE)) /*because jess*/
+(defglobal ?*false* = (new java.lang.Boolean FALSE))
 
 (defrule ideal
 	?s <- (Sala  {temperatura < (+ (get-member World tempIdeal) 1) 
@@ -28,83 +28,144 @@
 
 
 (defrule sensorMon
-	?s <- (Sala {movimento == 1}) =>(peopleOn ?s)
+	?s <- (Sala {movimento == TRUE}) =>(peopleOn ?s)
 )
 
 (defrule sensorMoff
-	?s <- (Sala {movimento == 0}) =>(peopleOff ?s)
+	?s <- (Sala {movimento == FALSE}) =>(peopleOff ?s)
 )
 
 (deffunction peopleOn (?s)
-	(if (> (get-member World luzIdeal) 2000) then
-		(if (> (get-member World luminosidade) 1000) then
+	(if (> (get-member World luzIdeal) 2000) then /*quer luz*/
+		(if (> (get-member World luminosidade) 2000) then
 			(if (neq ?s.persiana nil) then
-				(modify ?s (persiana ?true))
+				(modify ?s (persiana ?*true*))
+				(if (neq ?s.lampada nil) then
+					(modify ?s (lampada ?*false*)))
 			else
 			(if (neq ?s.lampada nil) then
-				(modify ?s (lampada ?true))))
+				(modify ?s (lampada ?*true*))))
 		else
 			(if (neq ?s.lampada nil) then
-				(modify ?s (lampada ?true)))
-		)
+				(modify ?s (lampada ?*true*))
+				(if (neq ?s.persiana nil) then
+				(modify ?s (persiana ?*false*)))))
 		else
 			(if (neq ?s.persiana nil) then
-				(modify ?s (persiana ?false)))
+				(modify ?s (persiana ?*false*)))
 			(if (neq ?s.lampada nil) then
-				(modify ?s (lampada ?false)))
+				(modify ?s (lampada ?*false*)))
 	)
 )
 		
 (deffunction peopleOff (?s)
 	(if (neq ?s.lampada nil) then
-		(if (eq ?s.lampada ?true) then
-			(modify ?s (lampada ?false))
+		(if (eq ?s.lampada ?*true*) then
+			(modify ?s (lampada ?*false*))
 		else
 		(if (neq ?s.persiana nil) then
-			(if (< (get-member World luminosidade) 1000) then
-				(modify ?s (persiana ?false)))))
+			(if (< (get-member World luminosidade) 2000) then
+				(modify ?s (persiana ?*false*)))))
 	else
 		(if (neq ?s.persiana nil) then
-			(if (< (get-member World luminosidade) 1000) then
-				(modify ?s (persiana ?false))))))
+			(if (< (get-member World luminosidade) 2000) then
+				(modify ?s (persiana ?*false*))))))
 				
 (deffunction aqueceQuarto (?s)
-	(if (neq ?s.aquecedor nil) then
-		(if(neq ?s.janela nil) then
-			(modify ?s (janela ?false))
-			(modify ?s (aquecedor ?true))
+	(if (neq (get-member World poupanca) TRUE) then
+		(if (neq ?s.aquecedor nil) then
+			(if (neq ?s.janela nil) then
+				(modify ?s (janela ?*false*))
+				(modify ?s (aquecedor ?*true*))
+				(if (neq ?s.ac nil) then
+					(modify ?s (ac ?*false*)))
+			else
+				(modify ?s (aquecedor ?*true*))
+				(if (neq ?s.ac nil) then
+					(modify ?s (ac ?*false*))))
 		else
-			(modify ?s (aquecedor ?true)))
+			(if (neq ?s.janela nil) then
+				 (if (> (- (get-member World temperatura) ?s.temperatura) 5) then
+				 	(if (< (get-member World humidade) 85) then
+					(modify ?s (janela ?*true*))
+					(if (neq ?s.ac nil) then
+					(modify ?s (ac ?*false*))))
+				else	
+					(modify ?s (janela ?*false*)))))
 	else
-		(if (neq ?s.janela nil) then
-			 (if (> (- (get-member World temperatura) ?s.temperatura) 5) then
-				(modify ?s (janela ?true))
-			else	
-				(modify ?s (janela ?false)))))
-		
-	
+		(if(neq ?s.janela nil) then
+			(if (> (- (get-member World temperatura) ?s.temperatura) 5) then
+				(if (< (get-member World humidade) 85) then
+				(modify ?s (janela ?*true*))
+				(if (neq ?s.ac nil)) then
+					(modify ?s (ac ?*false*))
+				)
+			else
+				(if (neq ?s.aquecedor nil) then
+					(modify ?s (aquecedor ?*true*))
+					(modify ?s (janela ?*false*))
+					(if (neq ?s.ac nil) then
+						(modify ?s (ac ?*false*)))
+				else
+					(modify ?s (janela ?*false*))))
+		else
+			(if (neq ?s.aquecedor nil) then
+				(modify ?s (aquecedor ?*true*))
+				(if (neq ?s.ac nil) then
+					(modify ?s (ac ?*false*))))))
+
+
 )
 
 (deffunction arrefeceQuarto (?s)
-	(if (neq ?s.ac nil) then
-		(modify ?s (ac ?true))
-		(if (neq ?s.janela nil) then
-			(modify ?s (janela ?false)))
+	(if (eq (get-member World poupanca) FALSE) then
+		(if (neq ?s.ac nil) then
+			(modify ?s (ac ?*true*))
+			(if (neq ?s.aquecedor nil) then
+				(modify ?s (aquecedor ?*false*)))
+			(if (neq ?s.janela nil) then
+				(modify ?s (janela ?*false*)))
+		else
+			(if (neq ?s.janela nil) then
+				(if (> (- ?s.temperatura (get-member World temperatura)) 5) then
+					(modify ?s (janela ?*true*))
+					(if (neq ?s.aquecedor nil) then
+						(modify ?s (aquecedor ?*false*)))
+				else
+					(modify ?s (janela ?*false*)))))
 	else
+	
 		(if (neq ?s.janela nil) then
 			(if (> (- ?s.temperatura (get-member World temperatura)) 5) then
-				(modify ?s (janela ?true))
+				(if (< (get-member World humidade) 85) then
+					(modify ?s (janela ?*true*))
+					(if (neq ?s.aquecedor nil) then
+						(modify ?s (aquecedor ?*false*)))
+					(if (neq ?s.ac nil) then
+						(modify ?s (ac ?*false*)))
+					)
 			else
-				(modify ?s (janela ?false))))))
-	
+				(if (neq ?s.ac nil) then
+					(modify ?s (janela ?*false*))
+					(modify ?s (ac ?*true*))
+					(if (neq ?s.aquecedor nil) then
+						(modify ?s (aquecedor ?*false*)))
+				else
+					(modify ?s (janela ?*false*))))
+		else
+			(if (neq ?s.ac nil) then
+			(modify ?s (ac ?*true*))
+			(if (neq ?s.aquecedor nil) then
+						(modify ?s (aquecedor ?*false*))))))
+)
 	
 	
 
 (deffunction mantem (?s)
 	(if (neq ?s.ac nil) then
-		(modify ?s (ac ?false)))
+		(modify ?s (ac ?*false*)))
 	(if (neq ?s.aquecedor nil) then
-		(modify ?s (aquecedor ?false)))
+		(modify ?s (aquecedor ?*false*)))
 	(if (neq ?s.janela nil) then
-		(modify ?s (janela ?false)))
+		(modify ?s (janela ?*false*)))
 )
